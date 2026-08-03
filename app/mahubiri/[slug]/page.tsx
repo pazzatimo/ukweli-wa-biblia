@@ -52,9 +52,9 @@ export default async function SermonPage({ params }: PageProps) {
 
       {sermon.media && (
         <div className="mb-8 p-4 bg-gray-50 rounded-lg">
-          {sermon.media.type === 'audio' && sermon.media.file && (
+          {sermon.media.type === 'audio' && sermon.media.fileUrl && (
             <audio controls className="w-full">
-              <source src={urlFor(sermon.media.file).url()} />
+              <source src={sermon.media.fileUrl} />
               Your browser does not support the audio element.
             </audio>
           )}

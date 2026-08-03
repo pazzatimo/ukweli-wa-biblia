@@ -1,5 +1,6 @@
 import { groq } from 'next-sanity'
 
+// Site Settings
 export const siteSettingsQuery = groq`
   *[_type == "siteSettings"][0] {
     siteTitle,
@@ -14,6 +15,7 @@ export const siteSettingsQuery = groq`
   }
 `
 
+// Articles
 export const articlesQuery = groq`
   *[_type == "article"] | order(publishedAt desc) {
     _id,
@@ -44,6 +46,7 @@ export const articleQuery = groq`
   }
 `
 
+// Sermons – FIXED: added fileUrl for media
 export const sermonsQuery = groq`
   *[_type == "sermon"] | order(dateDelivered desc) {
     _id,
@@ -52,7 +55,13 @@ export const sermonsQuery = groq`
     summary,
     dateDelivered,
     speaker->{ name, role, photo },
-    media,
+    media {
+      type,
+      duration,
+      "fileUrl": file.asset->url,
+      "youtubeUrl": youtubeUrl,
+      "externalUrl": externalUrl
+    },
     scriptureReferences,
     categories[]->{ title, slug }
   }
@@ -67,13 +76,20 @@ export const sermonQuery = groq`
     transcript,
     dateDelivered,
     speaker->{ name, role, photo, bio },
-    media,
+    media {
+      type,
+      duration,
+      "fileUrl": file.asset->url,
+      "youtubeUrl": youtubeUrl,
+      "externalUrl": externalUrl
+    },
     scriptureReferences,
     categories[]->{ title, slug },
     seo
   }
 `
 
+// Songs
 export const songsQuery = groq`
   *[_type == "song"] | order(title asc) {
     _id,
@@ -98,6 +114,7 @@ export const songQuery = groq`
   }
 `
 
+// Events
 export const eventsQuery = groq`
   *[_type == "event"] | order(startDateTime asc) {
     _id,
@@ -127,6 +144,7 @@ export const eventQuery = groq`
   }
 `
 
+// Pages
 export const pagesQuery = groq`
   *[_type == "page"] { _id, title, slug, pageBuilder }
 `
@@ -141,10 +159,12 @@ export const pageQuery = groq`
   }
 `
 
+// Categories
 export const categoriesQuery = groq`
   *[_type == "category"] | order(title asc) { _id, title, slug }
 `
 
+// People (Staff)
 export const peopleQuery = groq`
   *[_type == "person"] | order(order asc) {
     _id,
@@ -156,6 +176,7 @@ export const peopleQuery = groq`
   }
 `
 
+// Home page featured content
 export const homeQuery = groq`
   {
     "latestArticles": *[_type == "article"] | order(publishedAt desc)[0...5] {
@@ -174,7 +195,10 @@ export const homeQuery = groq`
       summary,
       dateDelivered,
       speaker->{ name },
-      media
+      media {
+        type,
+        "fileUrl": file.asset->url
+      }
     },
     "upcomingEvents": *[_type == "event"] | order(startDateTime asc)[0...3] {
       _id,
@@ -187,6 +211,7 @@ export const homeQuery = groq`
   }
 `
 
+// URL slugs for sitemap
 export const allSlugsQuery = groq`
   {
     "articles": *[_type == "article" && defined(slug.current)] { slug },
