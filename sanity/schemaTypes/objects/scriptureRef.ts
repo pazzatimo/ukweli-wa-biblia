@@ -28,7 +28,7 @@ export const scriptureRef = defineType({
       name: 'verseEnd',
       title: 'Verse End (optional)',
       type: 'number',
-      min: 1,
+      validation: (Rule) => Rule.min(1),
     }),
     defineField({
       name: 'displayText',
