@@ -1,12 +1,24 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Manrope } from 'next/font/google'
 import './globals.css'
 import { client } from '@/sanity/lib/sanity.client'
 import { siteSettingsQuery } from '@/sanity/lib/sanity.queries'
 import { Header } from '@/app/components/Header'
 import { Footer } from '@/app/components/Footer'
 
-const inter = Inter({ subsets: ['latin'], display: 'swap' })
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['400', '500', '600'],
+  variable: '--font-inter',
+})
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['700'],
+  variable: '--font-manrope',
+})
 
 export const metadata: Metadata = {
   title: 'Ukweli Wa Biblia - Kutangaza Neno la Mungu kwa uaminifu',
@@ -82,7 +94,11 @@ export default async function RootLayout({
   const settings = await getSiteSettings()
 
   return (
-    <html lang="sw" className="scroll-smooth" data-scroll-behavior="smooth">
+    <html
+      lang="sw"
+      className={`${inter.variable} ${manrope.variable} scroll-smooth`}
+      data-scroll-behavior="smooth"
+    >
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -90,7 +106,7 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className={`${inter.className} antialiased`}>
+      <body className="font-sans antialiased bg-gray-50 text-gray-800">
         <Header settings={settings} />
         <main className="min-h-screen">{children}</main>
         <Footer settings={settings} />

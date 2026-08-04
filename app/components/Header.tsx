@@ -21,12 +21,10 @@ export function Header({ settings }: { settings: SiteSettings }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname()
 
-  // Close mobile menu on route change
   useEffect(() => {
     setIsMenuOpen(false)
   }, [pathname])
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = 'hidden'
@@ -39,7 +37,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
   }, [isMenuOpen])
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 transition-all duration-200">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 transition-all duration-200 font-sans">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
@@ -65,7 +63,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation – Inter 500 */}
           <nav className="hidden md:flex items-center gap-1 lg:gap-2">
             {settings?.navigation?.map((item: NavigationItem) => {
               const isActive = pathname === item.url || (item.url !== '/' && pathname.startsWith(item.url))
@@ -118,7 +116,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Overlay */}
       <div
         className={`
           fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 md:hidden
@@ -127,7 +125,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
         onClick={() => setIsMenuOpen(false)}
       />
 
-      {/* Mobile Navigation */}
+      {/* Mobile Navigation – Inter 500 */}
       <div
         className={`
           fixed top-0 right-0 h-full w-64 bg-white shadow-xl transition-transform duration-300 ease-out md:hidden
@@ -156,7 +154,6 @@ export function Header({ settings }: { settings: SiteSettings }) {
               )
             })}
           </nav>
-          {/* Optional extra content: social links, contact, etc. */}
           <div className="mt-auto pt-6 border-t border-gray-100">
             <p className="text-xs text-gray-400 text-center">
               © {new Date().getFullYear()} {settings?.siteTitle || 'Ukweli Wa Biblia'}
