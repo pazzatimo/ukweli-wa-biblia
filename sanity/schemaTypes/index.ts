@@ -11,9 +11,9 @@ import { song } from './documents/song'
 import { event } from './documents/event'
 import { page } from './documents/page'
 import { siteSettings } from './documents/siteSettings'
-// new imports
 import { about } from './documents/about'
 import { media } from './documents/media'
+import { shuhuda } from './documents/shuhuda'  // <-- add this
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   seo,
@@ -28,6 +28,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   event,
   page,
   siteSettings,
-  about,   // <-- add
-  media,   // <-- add
+  about,
+  media,
+  shuhuda,  // <-- add this
 ]
