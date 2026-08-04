@@ -21,7 +21,7 @@ interface Slide {
 
 export function HeroSlider({ slides }: { slides: Slide[] }) {
   if (!slides || slides.length === 0) {
-    return null // or a placeholder
+    return null
   }
 
   return (
@@ -30,25 +30,33 @@ export function HeroSlider({ slides }: { slides: Slide[] }) {
       effect="fade"
       spaceBetween={0}
       slidesPerView={1}
-      autoplay={{ delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true }}
-      pagination={{ clickable: true, bulletActiveClass: 'swiper-pagination-bullet-active !bg-white' }}
+      autoplay={{
+        delay: 5000,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
+      }}
+      pagination={{
+        clickable: true,
+        bulletActiveClass: 'swiper-pagination-bullet-active !bg-white',
+      }}
       navigation={false}
       loop={true}
       className="w-full h-[600px] md:h-[700px]"
     >
-      {slides.map((slide) => (
+      {slides.map((slide, index) => (
         <SwiperSlide key={slide._id}>
-          <div className="relative w-full h-full bg-primary-800">
+          <div className="relative w-full h-full">
             <Image
               src={slide.image}
               alt={slide.title}
               fill
-              priority={slides.indexOf(slide) === 0}
-              className="object-contain"
+              priority={index === 0}
+              className="object-cover"
               sizes="100vw"
               quality={90}
             />
-            <div className="absolute inset-0 bg-black/30" />
+            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
                 {slide.subtitle && (
