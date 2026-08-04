@@ -3,7 +3,8 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { urlFor } from '@/sanity/lib/sanity.image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 
 interface NavigationItem {
   label: string
@@ -18,92 +19,150 @@ interface SiteSettings {
 
 export function Header({ settings }: { settings: SiteSettings }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const pathname = usePathname()
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMenuOpen(false)
+  }, [pathname])
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isMenuOpen])
 
   return (
-    <header className="bg-white shadow-soft border-b border-gray-100 sticky top-0 z-50">
-      <div className="container py-4">
-        <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 transition-all duration-200">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 md:h-20">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
             {settings?.logo ? (
-              <div className="relative w-12 h-12 overflow-hidden rounded-full">
+              <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden ring-2 ring-primary-100 group-hover:ring-gold-300 transition-all duration-300">
                 <Image
-                  src={urlFor(settings.logo).width(48).height(48).url()}
+                  src={urlFor(settings.logo).width(60).height(60).url()}
                   alt={settings.siteTitle}
                   fill
-                  sizes="48px"
                   className="object-cover"
-                  priority // <-- Added for LCP optimization
+                  sizes="60px"
+                  priority
                 />
               </div>
             ) : (
-              <div className="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold text-lg md:text-xl group-hover:bg-primary-700 transition-colors duration-300">
                 U
               </div>
             )}
-            <span className="text-xl font-bold text-primary-700 group-hover:text-gold-600 transition-colors">
+            <span className="text-lg md:text-xl font-bold text-primary-700 group-hover:text-gold-600 transition-colors duration-300 whitespace-nowrap">
               {settings?.siteTitle || 'Ukweli Wa Biblia'}
             </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8">
-            {settings?.navigation?.map((item: NavigationItem) => (
-              <Link
-                key={item.label}
-                href={item.url}
-                className="text-gray-700 hover:text-primary-600 font-medium transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-gold-500 after:transition-all hover:after:w-full"
-              >
-                {item.label}
-              </Link>
-            ))}
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-1 lg:gap-2">
+            {settings?.navigation?.map((item: NavigationItem) => {
+              const isActive = pathname === item.url || (item.url !== '/' && pathname.startsWith(item.url))
+              return (
+                <Link
+                  key={item.label}
+                  href={item.url}
+                  className={`
+                    relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200
+                    ${
+                      isActive
+                        ? 'text-primary-700 bg-primary-50'
+                        : 'text-gray-600 hover:text-primary-700 hover:bg-primary-50'
+                    }
+                  `}
+                >
+                  {item.label}
+                  {isActive && (
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-gold-500 rounded-full" />
+                  )}
+                </Link>
+              )
+            })}
           </nav>
 
+          {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors relative z-50"
             aria-label="Toggle menu"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="28"
-              height="28"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-primary-700"
-            >
-              {isMenuOpen ? (
-                <>
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </>
-              ) : (
-                <>
-                  <line x1="3" y1="12" x2="21" y2="12" />
-                  <line x1="3" y1="6" x2="21" y2="6" />
-                  <line x1="3" y1="18" x2="21" y2="18" />
-                </>
-              )}
-            </svg>
+            <div className="w-6 h-5 flex flex-col justify-between">
+              <span
+                className={`block h-0.5 bg-primary-700 rounded-full transition-all duration-300 origin-left ${
+                  isMenuOpen ? 'rotate-45 translate-x-0.5' : ''
+                }`}
+              />
+              <span
+                className={`block h-0.5 bg-primary-700 rounded-full transition-all duration-300 ${
+                  isMenuOpen ? 'opacity-0' : ''
+                }`}
+              />
+              <span
+                className={`block h-0.5 bg-primary-700 rounded-full transition-all duration-300 origin-left ${
+                  isMenuOpen ? '-rotate-45 translate-x-0.5' : ''
+                }`}
+              />
+            </div>
           </button>
         </div>
+      </div>
 
-        {isMenuOpen && (
-          <nav className="md:hidden mt-4 pt-4 border-t border-gray-100 space-y-2">
-            {settings?.navigation?.map((item: NavigationItem) => (
-              <Link
-                key={item.label}
-                href={item.url}
-                className="block px-4 py-2 rounded-lg hover:bg-primary-50 text-gray-700 hover:text-primary-600 font-medium transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item.label}
-              </Link>
-            ))}
+      {/* Mobile Menu Overlay */}
+      <div
+        className={`
+          fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 md:hidden
+          ${isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
+        `}
+        onClick={() => setIsMenuOpen(false)}
+      />
+
+      {/* Mobile Navigation */}
+      <div
+        className={`
+          fixed top-0 right-0 h-full w-64 bg-white shadow-xl transition-transform duration-300 ease-out md:hidden
+          ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}
+        `}
+      >
+        <div className="flex flex-col h-full pt-20 px-6 pb-6 overflow-y-auto">
+          <nav className="flex flex-col space-y-1">
+            {settings?.navigation?.map((item: NavigationItem) => {
+              const isActive = pathname === item.url || (item.url !== '/' && pathname.startsWith(item.url))
+              return (
+                <Link
+                  key={item.label}
+                  href={item.url}
+                  className={`
+                    px-4 py-3 text-base font-medium rounded-lg transition-all duration-200
+                    ${
+                      isActive
+                        ? 'text-primary-700 bg-primary-50'
+                        : 'text-gray-600 hover:text-primary-700 hover:bg-primary-50'
+                    }
+                  `}
+                >
+                  {item.label}
+                </Link>
+              )
+            })}
           </nav>
-        )}
+          {/* Optional extra content: social links, contact, etc. */}
+          <div className="mt-auto pt-6 border-t border-gray-100">
+            <p className="text-xs text-gray-400 text-center">
+              © {new Date().getFullYear()} {settings?.siteTitle || 'Ukweli Wa Biblia'}
+            </p>
+          </div>
+        </div>
       </div>
     </header>
   )
