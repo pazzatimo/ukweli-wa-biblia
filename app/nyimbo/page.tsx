@@ -16,35 +16,36 @@ export default async function SongsPage() {
 
   return (
     <div className="container mx-auto px-4 py-16">
-      <h1 className="text-4xl font-bold mb-8">Nyimbo Zote</h1>
+      <h1 className="text-3xl md:text-4xl font-bold mb-8 text-primary-700">Nyimbo Zote</h1>
 
       {songs.length === 0 ? (
-        <p className="text-gray-600">Hakuna nyimbo bado. Jisajili katika Studio kuongeza nyimbo.</p>
+        <p className="text-gray-500 text-center py-8">Hakuna nyimbo bado.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {songs.map((song: any) => (
             <Link key={song._id} href={`/nyimbo/${song.slug.current}`}>
-              <div className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow bg-white p-4">
-                <h2 className="font-semibold text-lg mb-2">{song.title}</h2>
+              <div className="border rounded-xl p-5 hover:shadow-medium transition-shadow bg-white">
+                <h2 className="font-bold text-lg text-primary-700">{song.title}</h2>
                 {song.composedBy && (
-                  <p className="text-sm text-gray-600">Mwandishi: {song.composedBy.name}</p>
+                  <p className="text-sm text-gray-500 mt-1">{song.composedBy.name}</p>
                 )}
                 {song.dateWritten && (
-                  <p className="text-sm text-gray-400">
-                    {new Date(song.dateWritten).toLocaleDateString('sw')}
+                  <p className="text-xs text-gray-400 mt-1">
+                    {new Date(song.dateWritten).toLocaleDateString('sw', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
                   </p>
                 )}
                 {song.scriptureBasis && song.scriptureBasis.length > 0 && (
-                  <div className="mt-2">
-                    <p className="text-xs text-gray-500">Msingi wa Biblia:</p>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {song.scriptureBasis.map((ref: any, index: number) => (
-                        <span key={index} className="text-xs bg-gray-200 px-2 py-1 rounded">
-                          {ref.displayText ||
-                            `${ref.book} ${ref.chapter}:${ref.verseStart}${ref.verseEnd ? `-${ref.verseEnd}` : ''}`}
-                        </span>
-                      ))}
-                    </div>
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {song.scriptureBasis.map((ref: any, idx: number) => (
+                      <span key={idx} className="text-xs bg-primary-50 text-primary-700 px-2 py-0.5 rounded-full">
+                        {ref.displayText ||
+                          `${ref.book} ${ref.chapter}:${ref.verseStart}${ref.verseEnd ? `-${ref.verseEnd}` : ''}`}
+                      </span>
+                    ))}
                   </div>
                 )}
               </div>

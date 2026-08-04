@@ -80,7 +80,7 @@ export default async function RootLayout({
   const settings = await getSiteSettings()
 
   return (
-    <html lang="sw" className="scroll-smooth">
+    <html lang="sw" className="scroll-smooth" data-scroll-behavior="smooth">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

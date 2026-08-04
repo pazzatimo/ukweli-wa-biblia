@@ -108,7 +108,7 @@ export default async function AboutPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {about.coreBeliefs.map((belief: any, index: number) => (
                 <div
-                  key={index}
+                  key={belief._key || index}
                   className="bg-white rounded-2xl shadow-soft p-6 md:p-8 border-l-4 border-gold-400"
                 >
                   <h3 className="text-xl font-bold text-primary-700 mb-3">
@@ -141,7 +141,7 @@ export default async function AboutPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {about.leadership.map((leader: any, index: number) => (
               <div
-                key={index}
+                key={leader._key || index}
                 className="group bg-white rounded-2xl shadow-soft hover:shadow-large transition-all duration-300 overflow-hidden text-center"
               >
                 {leader.photo ? (

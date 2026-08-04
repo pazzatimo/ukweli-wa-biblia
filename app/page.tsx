@@ -34,7 +34,7 @@ export default async function Home() {
               href="/makala"
               className="text-primary-600 hover:text-gold-500 font-medium text-sm transition-colors flex items-center gap-1"
             >
-              Zote <span className="text-lg">→</span>
+              Tazama Zote <span className="text-lg">→</span>
             </Link>
           </div>
 
@@ -94,7 +94,7 @@ export default async function Home() {
               href="/mahubiri"
               className="text-primary-600 hover:text-gold-500 font-medium text-sm transition-colors flex items-center gap-1"
             >
-              Yote <span className="text-lg">→</span>
+              Tazama Yote <span className="text-lg">→</span>
             </Link>
           </div>
 

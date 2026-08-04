@@ -56,11 +56,11 @@ export function MediaTabs({ music = [], videos = [], documents = [] }: MediaTabs
               <p className="text-gray-500 text-center py-8">Hakuna nyimbo zilizowekwa bado.</p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {music.map((song: any, index: number) => (
-                  <div key={index} className="border rounded-xl p-5 hover:shadow-medium transition-shadow">
+                {music.map((song: any) => (
+                  <div key={song._id} className="border rounded-xl p-5 hover:shadow-medium transition-shadow">
                     <h3 className="font-bold text-primary-700">{song.title}</h3>
-                    {song.lyrics && (
-                      <p className="text-sm text-gray-600 mt-2 line-clamp-3 whitespace-pre-wrap">{song.lyrics}</p>
+                    {song.composedBy && (
+                      <p className="text-sm text-gray-500 mt-1">{song.composedBy.name}</p>
                     )}
                     {song.audioUrl ? (
                       <div className="mt-4">
@@ -87,7 +87,7 @@ export function MediaTabs({ music = [], videos = [], documents = [] }: MediaTabs
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {videos.map((video: any, index: number) => (
-                  <div key={index} className="border rounded-xl overflow-hidden hover:shadow-medium transition-shadow">
+                  <div key={video._key || index} className="border rounded-xl overflow-hidden hover:shadow-medium transition-shadow">
                     {video.thumbnail && (
                       <div className="relative h-48 bg-gray-100">
                         <Image
@@ -137,7 +137,7 @@ export function MediaTabs({ music = [], videos = [], documents = [] }: MediaTabs
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {documents.map((doc: any, index: number) => (
-                  <div key={index} className="border rounded-xl p-5 hover:shadow-medium transition-shadow">
+                  <div key={doc._key || index} className="border rounded-xl p-5 hover:shadow-medium transition-shadow">
                     <div className="flex items-start gap-3">
                       <div className="text-2xl">📄</div>
                       <div className="flex-1">
@@ -152,7 +152,7 @@ export function MediaTabs({ music = [], videos = [], documents = [] }: MediaTabs
                             rel="noopener noreferrer"
                             className="inline-block mt-3 text-primary-600 hover:text-gold-500 text-sm font-medium"
                           >
-                            Pakua Faili ↓
+                            Pakua↓
                           </a>
                         )}
                       </div>
