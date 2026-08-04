@@ -21,12 +21,10 @@ export function Header({ settings }: { settings: SiteSettings }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname()
 
-  // Close menu on route change
   useEffect(() => {
     setIsMenuOpen(false)
   }, [pathname])
 
-  // Prevent body scroll when menu is open
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = 'hidden'
@@ -40,8 +38,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
 
   return (
     <>
-      {/* Main Header */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 font-sans">
+      <header className="sticky top-0 z-[100] bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 font-sans">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
@@ -93,7 +90,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
               })}
             </nav>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Toggle – z-index above everything */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors relative z-[9999]"
@@ -121,7 +118,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
         </div>
       </header>
 
-      {/* Mobile Overlay */}
+      {/* Overlay – covers everything behind */}
       <div
         className={`fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
           isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
@@ -130,7 +127,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
         onClick={() => setIsMenuOpen(false)}
       />
 
-      {/* Mobile Navigation Panel */}
+      {/* Mobile Menu Panel – on top of overlay */}
       <div
         className={`fixed top-0 right-0 h-full w-64 bg-white shadow-2xl transition-transform duration-300 ease-out md:hidden ${
           isMenuOpen ? 'translate-x-0' : 'translate-x-full'
