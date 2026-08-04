@@ -1,5 +1,5 @@
 import { client } from '@/sanity/lib/sanity.client'
-import { homeQuery } from '@/sanity/lib/sanity.queries'
+import { homeQuery, heroSlidesQuery } from '@/sanity/lib/sanity.queries'
 import { urlFor } from '@/sanity/lib/sanity.image'
 import { HeroSlider } from '@/app/components/HeroSlider'
 import Link from 'next/link'
@@ -7,13 +7,18 @@ import Image from 'next/image'
 
 async function getHomeData() {
   try {
-    return await client.fetch(homeQuery)
+    const [homeData, heroSlides] = await Promise.all([
+      client.fetch(homeQuery),
+      client.fetch(heroSlidesQuery),
+    ])
+    return { ...homeData, heroSlides }
   } catch (error) {
     console.error('Failed to fetch home data:', error)
     return {
       latestArticles: [],
       latestSermons: [],
       upcomingEvents: [],
+      heroSlides: [],
     }
   }
 }
@@ -23,14 +28,17 @@ export default async function Home() {
 
   return (
     <div>
-      <HeroSlider />
+      <HeroSlider slides={data.heroSlides} />
 
-      {/* Articles */}
+      {/* Articles Section */}
       <section className="py-16 bg-white">
         <div className="container">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl md:text-3xl font-bold text-primary-700">Makala</h2>
-            <Link href="/makala" className="text-primary-600 hover:text-gold-500 font-medium text-sm flex items-center gap-1">
+            <Link
+              href="/makala"
+              className="text-primary-600 hover:text-gold-500 font-medium text-sm transition-colors flex items-center gap-1"
+            >
               Tazama Zote <span className="text-lg">→</span>
             </Link>
           </div>
@@ -82,15 +90,19 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Sermons */}
+      {/* Sermons Section */}
       <section className="py-16 bg-gray-50">
         <div className="container">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl md:text-3xl font-bold text-primary-700">Mahubiri</h2>
-            <Link href="/mahubiri" className="text-primary-600 hover:text-gold-500 font-medium text-sm flex items-center gap-1">
+            <Link
+              href="/mahubiri"
+              className="text-primary-600 hover:text-gold-500 font-medium text-sm transition-colors flex items-center gap-1"
+            >
               Tazama Yote <span className="text-lg">→</span>
             </Link>
           </div>
+
           {data.latestSermons.length === 0 ? (
             <p className="text-gray-500 text-center py-8">Hakuna mahubiri bado.</p>
           ) : (
@@ -130,15 +142,19 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Events */}
+      {/* Events Section */}
       <section className="py-16 bg-white">
         <div className="container">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl md:text-3xl font-bold text-primary-700">Matukio</h2>
-            <Link href="/matukio" className="text-primary-600 hover:text-gold-500 font-medium text-sm flex items-center gap-1">
+            <Link
+              href="/matukio"
+              className="text-primary-600 hover:text-gold-500 font-medium text-sm transition-colors flex items-center gap-1"
+            >
               Tazama Yote <span className="text-lg">→</span>
             </Link>
           </div>
+
           {data.upcomingEvents.length === 0 ? (
             <p className="text-gray-500 text-center py-8">Hakuna matukio yajayo.</p>
           ) : (

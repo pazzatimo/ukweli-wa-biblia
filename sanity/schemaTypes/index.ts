@@ -13,7 +13,8 @@ import { page } from './documents/page'
 import { siteSettings } from './documents/siteSettings'
 import { about } from './documents/about'
 import { media } from './documents/media'
-import { shuhuda } from './documents/shuhuda'  // <-- add this
+import { shuhuda } from './documents/shuhuda'
+import { heroSlide } from './documents/heroSlide'   // <-- NEW
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   seo,
@@ -30,5 +31,6 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   siteSettings,
   about,
   media,
-  shuhuda,  // <-- add this
+  shuhuda,
+  heroSlide,  // <-- REGISTERED
 ]

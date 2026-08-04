@@ -18,6 +18,21 @@ export const siteSettingsQuery = groq`
 `
 
 // ============================================================
+// Hero Slides
+// ============================================================
+export const heroSlidesQuery = groq`
+  *[_type == "heroSlide" && active == true] | order(order asc, _createdAt asc) {
+    _id,
+    title,
+    subtitle,
+    description,
+    "image": image.asset->url,
+    ctaText,
+    ctaLink
+  }
+`
+
+// ============================================================
 // Articles
 // ============================================================
 export const articlesQuery = groq`

@@ -5,61 +5,25 @@ import { Autoplay, Pagination, EffectFade } from 'swiper/modules'
 import Image from 'next/image'
 import Link from 'next/link'
 
-// Import Swiper styles
 import 'swiper/css'
 import 'swiper/css/pagination'
 import 'swiper/css/effect-fade'
 
-// Add or remove slides here to match your images
-const slides = [
-  {
-    id: 1,
-    title: 'Imani',
-    subtitle: 'Warumi 10:17',
-    description: 'Basi imani, chanzo chake ni kusikia; na kusikia huja kwa neno la Kristo.',
-    image: '/images/hero-1.jpg',
-    ctaText: 'Soma Makala',
-    ctaLink: '/makala',
-  },
-  {
-    id: 2,
-    title: 'Wokovu',
-    subtitle: 'Je umeokolewa?',
-    description: 'Wokovu ni zawadi ya bure ya Mungu, inayopokelewa kwa njia ya imani katika Yesu Kristo si kwa matendo, taratibu za kidini, au sifa fulani. ',
-    image: '/images/hero-2.jpg',
-    ctaText: 'Sikiliza Mahubiri',
-    ctaLink: '/mahubiri',
-  },
-  {
-    id: 3,
-    title: 'Imani moja',
-    subtitle: 'Waefeso 4:5',
-    description: 'Bwana mmoja, imani moja, ubatizo mmoja.',
-    image: '/images/hero-3.jpg',
-    ctaText: 'Wasiliana Nasi',
-    ctaLink: '/wasiliana',
-  },
-  {
-    id: 4,
-    title: 'Ukweli Wa Biblia Uliorejeshwa',
-    subtitle: 'Malaki 4:5-6',
-    description: '5. Angalieni, nitawapelekea Eliya nabii, kabla haijaja siku ile ya Bwana, iliyo kuu na kuogofya. 6 Naye ataigeuza mioyo ya baba iwaelekee watoto, na mioyo ya watoto iwaelekee baba zao, ili nisije nikaipiga dunia kwa laana.',
-    image: '/images/hero-4.jpg',
-    ctaText: 'Soma Makala',
-    ctaLink: '/makala',
-  },
-  {
-    id: 5,
-    title: 'Mungu Mmoja',
-    subtitle: 'Waebrania 13:8',
-    description: 'Yesu Kristo ni yeye yule jana na hata milele',
-    image: '/images/hero-5.jpg',
-    ctaText: 'Jiunge Nasi',
-    ctaLink: '/wasiliana',
-  },
-]
+interface Slide {
+  _id: string
+  title: string
+  subtitle: string
+  description: string
+  image: string
+  ctaText: string
+  ctaLink: string
+}
 
-export function HeroSlider() {
+export function HeroSlider({ slides }: { slides: Slide[] }) {
+  if (!slides || slides.length === 0) {
+    return null // or a placeholder
+  }
+
   return (
     <Swiper
       modules={[Autoplay, Pagination, EffectFade]}
@@ -73,13 +37,13 @@ export function HeroSlider() {
       className="w-full h-[600px] md:h-[700px]"
     >
       {slides.map((slide) => (
-        <SwiperSlide key={slide.id}>
+        <SwiperSlide key={slide._id}>
           <div className="relative w-full h-full bg-primary-800">
             <Image
               src={slide.image}
               alt={slide.title}
               fill
-              priority={slide.id === 1}
+              priority={slides.indexOf(slide) === 0}
               className="object-contain"
               sizes="100vw"
               quality={90}
@@ -87,15 +51,19 @@ export function HeroSlider() {
             <div className="absolute inset-0 bg-black/30" />
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
-                <p className="text-gold-300 font-semibold text-sm md:text-base uppercase tracking-widest mb-4">
-                  {slide.subtitle}
-                </p>
+                {slide.subtitle && (
+                  <p className="text-gold-300 font-semibold text-sm md:text-base uppercase tracking-widest mb-4">
+                    {slide.subtitle}
+                  </p>
+                )}
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
                   {slide.title}
                 </h1>
-                <p className="text-lg md:text-xl opacity-90 max-w-2xl mb-8 leading-relaxed">
-                  {slide.description}
-                </p>
+                {slide.description && (
+                  <p className="text-lg md:text-xl opacity-90 max-w-2xl mb-8 leading-relaxed">
+                    {slide.description}
+                  </p>
+                )}
                 <Link
                   href={slide.ctaLink}
                   className="inline-block bg-gold-500 hover:bg-gold-600 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
