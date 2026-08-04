@@ -1,166 +1,88 @@
 'use client'
 
-import Link from 'next/link'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Autoplay, Pagination, EffectFade } from 'swiper/modules'
 import Image from 'next/image'
-import { urlFor } from '@/sanity/lib/sanity.image'
-import { useState, useEffect } from 'react'
-import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 
-interface NavigationItem {
-  label: string
-  url: string
+import 'swiper/css'
+import 'swiper/css/pagination'
+import 'swiper/css/effect-fade'
+
+export interface Slide {
+  _id: string
+  title: string
+  subtitle: string
+  description: string
+  image: string
+  ctaText: string
+  ctaLink: string
 }
 
-interface SiteSettings {
-  siteTitle: string
-  logo?: any
-  navigation: NavigationItem[]
-}
-
-export function Header({ settings }: { settings: SiteSettings }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const pathname = usePathname()
-
-  useEffect(() => {
-    setIsMenuOpen(false)
-  }, [pathname])
-
-  useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [isMenuOpen])
+export function HeroSlider({ slides }: { slides: Slide[] }) {
+  if (!slides || slides.length === 0) {
+    return null
+  }
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 transition-all duration-200 font-sans">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
-            {settings?.logo ? (
-              <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden ring-2 ring-primary-100 group-hover:ring-gold-300 transition-all duration-300">
-                <Image
-                  src={urlFor(settings.logo).width(60).height(60).url()}
-                  alt={settings.siteTitle}
-                  fill
-                  className="object-cover"
-                  sizes="60px"
-                  priority
-                />
-              </div>
-            ) : (
-              <div className="w-10 h-10 md:w-12 md:h-12 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold text-lg md:text-xl group-hover:bg-primary-700 transition-colors duration-300">
-                U
-              </div>
-            )}
-            <span className="text-lg md:text-xl font-bold text-primary-700 group-hover:text-gold-600 transition-colors duration-300 whitespace-nowrap">
-              {settings?.siteTitle || 'Ukweli Wa Biblia'}
-            </span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1 lg:gap-2">
-            {settings?.navigation?.map((item: NavigationItem) => {
-              const isActive = pathname === item.url || (item.url !== '/' && pathname.startsWith(item.url))
-              return (
+    <Swiper
+      modules={[Autoplay, Pagination, EffectFade]}
+      effect="fade"
+      spaceBetween={0}
+      slidesPerView={1}
+      autoplay={{
+        delay: 5000,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
+      }}
+      pagination={{
+        clickable: true,
+        bulletActiveClass: 'swiper-pagination-bullet-active !bg-white',
+      }}
+      navigation={false}
+      loop={true}
+      className="w-full h-[400px] sm:h-[500px] md:h-[600px] lg:h-[700px]"
+    >
+      {slides.map((slide, index) => (
+        <SwiperSlide key={slide._id}>
+          <div className="relative w-full h-full">
+            <Image
+              src={slide.image}
+              alt={slide.title}
+              fill
+              priority={index === 0}
+              className="object-cover"
+              sizes="100vw"
+              quality={90}
+            />
+            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
+                {slide.subtitle && (
+                  <p className="text-gold-300 font-semibold text-xs sm:text-sm md:text-base uppercase tracking-widest mb-2 sm:mb-4">
+                    {slide.subtitle}
+                  </p>
+                )}
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-2 sm:mb-4 leading-tight">
+                  {slide.title}
+                </h1>
+                {slide.description && (
+                  <p className="text-sm sm:text-base md:text-lg lg:text-xl opacity-90 max-w-2xl mx-auto mb-4 sm:mb-6 md:mb-8 leading-relaxed">
+                    {slide.description}
+                  </p>
+                )}
                 <Link
-                  key={item.label}
-                  href={item.url}
-                  className={`
-                    relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200
-                    ${
-                      isActive
-                        ? 'text-primary-700 bg-primary-50'
-                        : 'text-gray-600 hover:text-primary-700 hover:bg-primary-50'
-                    }
-                  `}
+                  href={slide.ctaLink}
+                  className="inline-block bg-gold-500 hover:bg-gold-600 text-white px-5 sm:px-6 md:px-8 py-2 sm:py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base"
                 >
-                  {item.label}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-gold-500 rounded-full" />
-                  )}
+                  {slide.ctaText}
                 </Link>
-              )
-            })}
-          </nav>
-
-          {/* Mobile Menu Toggle */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors relative z-50"
-            aria-label="Toggle menu"
-          >
-            <div className="w-6 h-5 flex flex-col justify-between">
-              <span
-                className={`block h-0.5 bg-primary-700 rounded-full transition-all duration-300 origin-left ${
-                  isMenuOpen ? 'rotate-45 translate-x-0.5' : ''
-                }`}
-              />
-              <span
-                className={`block h-0.5 bg-primary-700 rounded-full transition-all duration-300 ${
-                  isMenuOpen ? 'opacity-0' : ''
-                }`}
-              />
-              <span
-                className={`block h-0.5 bg-primary-700 rounded-full transition-all duration-300 origin-left ${
-                  isMenuOpen ? '-rotate-45 translate-x-0.5' : ''
-                }`}
-              />
+              </div>
             </div>
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Overlay */}
-      <div
-        className={`
-          fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 md:hidden z-40
-          ${isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
-        `}
-        onClick={() => setIsMenuOpen(false)}
-      />
-
-      {/* Mobile Navigation – FIXED visibility and positioning */}
-      <div
-        className={`
-          fixed top-0 right-0 h-screen w-64 bg-white shadow-xl transition-transform duration-300 ease-out md:hidden z-50
-          ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}
-        `}
-      >
-        <div className="flex flex-col h-full pt-20 px-6 pb-6 overflow-y-auto">
-          <nav className="flex flex-col space-y-1">
-            {settings?.navigation?.map((item: NavigationItem) => {
-              const isActive = pathname === item.url || (item.url !== '/' && pathname.startsWith(item.url))
-              return (
-                <Link
-                  key={item.label}
-                  href={item.url}
-                  className={`
-                    px-4 py-3 text-base font-medium rounded-lg transition-all duration-200
-                    ${
-                      isActive
-                        ? 'text-primary-700 bg-primary-50'
-                        : 'text-gray-600 hover:text-primary-700 hover:bg-primary-50'
-                    }
-                  `}
-                >
-                  {item.label}
-                </Link>
-              )
-            })}
-          </nav>
-          <div className="mt-auto pt-6 border-t border-gray-100">
-            <p className="text-xs text-gray-400 text-center">
-              © {new Date().getFullYear()} {settings?.siteTitle || 'Ukweli Wa Biblia'}
-            </p>
           </div>
-        </div>
-      </div>
-    </header>
+        </SwiperSlide>
+      ))}
+    </Swiper>
   )
 }

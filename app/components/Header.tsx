@@ -63,7 +63,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
             </span>
           </Link>
 
-          {/* Desktop Navigation – Inter 500 */}
+          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1 lg:gap-2">
             {settings?.navigation?.map((item: NavigationItem) => {
               const isActive = pathname === item.url || (item.url !== '/' && pathname.startsWith(item.url))
@@ -92,7 +92,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors relative z-50"
+            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors relative z-[9999]"
             aria-label="Toggle menu"
           >
             <div className="w-6 h-5 flex flex-col justify-between">
@@ -116,21 +116,23 @@ export function Header({ settings }: { settings: SiteSettings }) {
         </div>
       </div>
 
-      {/* Mobile Overlay */}
+      {/* Mobile Overlay – z-index higher than header */}
       <div
         className={`
           fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 md:hidden
           ${isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
         `}
+        style={{ zIndex: 9998 }}
         onClick={() => setIsMenuOpen(false)}
       />
 
-      {/* Mobile Navigation – Inter 500 */}
+      {/* Mobile Navigation – z-index even higher */}
       <div
         className={`
-          fixed top-0 right-0 h-full w-64 bg-white shadow-xl transition-transform duration-300 ease-out md:hidden
+          fixed top-0 right-0 h-full w-64 bg-white shadow-2xl transition-transform duration-300 ease-out md:hidden
           ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}
         `}
+        style={{ zIndex: 9999 }}
       >
         <div className="flex flex-col h-full pt-20 px-6 pb-6 overflow-y-auto">
           <nav className="flex flex-col space-y-1">
