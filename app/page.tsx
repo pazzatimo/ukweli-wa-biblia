@@ -25,27 +25,28 @@ export default async function Home() {
     <div>
       <HeroSlider />
 
-      <section className="py-20 bg-white">
+      {/* Articles Section */}
+      <section className="py-16 bg-white">
         <div className="container">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-gold-500 font-semibold text-sm uppercase tracking-wider">Makala</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-primary-700 mt-2 mb-4">
-              Makala za Hivi Karibuni
-            </h2>
-            <p className="text-gray-600 text-lg">
-              Soma makala za kujenga imani na kuelimisha roho yako.
-            </p>
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-primary-700">Makala</h2>
+            <Link
+              href="/makala"
+              className="text-primary-600 hover:text-gold-500 font-medium text-sm transition-colors flex items-center gap-1"
+            >
+              Zote <span className="text-lg">→</span>
+            </Link>
           </div>
 
           {data.latestArticles.length === 0 ? (
-            <p className="text-gray-500 text-center py-12">Hakuna makala bado.</p>
+            <p className="text-gray-500 text-center py-8">Hakuna makala bado.</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {data.latestArticles.slice(0, 3).map((article: any) => (
                 <Link key={article._id} href={`/makala/${article.slug.current}`}>
-                  <div className="group card overflow-hidden bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-300">
+                  <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-300 overflow-hidden border border-gray-50">
                     {article.coverImage && (
-                      <div className="relative h-56 overflow-hidden bg-gray-100">
+                      <div className="relative h-52 overflow-hidden bg-gray-100">
                         <Image
                           src={urlFor(article.coverImage).width(600).height(350).url()}
                           alt={article.title}
@@ -55,14 +56,12 @@ export default async function Home() {
                         />
                       </div>
                     )}
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold text-primary-700 mb-2 group-hover:text-gold-500 transition-colors line-clamp-2">
+                    <div className="p-5">
+                      <h3 className="text-lg font-bold text-primary-700 group-hover:text-gold-500 transition-colors line-clamp-2">
                         {article.title}
                       </h3>
-                      <p className="text-gray-600 line-clamp-2 mb-3">
-                        {article.excerpt}
-                      </p>
-                      <div className="flex items-center gap-3 text-sm text-gray-500">
+                      <p className="text-gray-500 text-sm mt-1 line-clamp-2">{article.excerpt}</p>
+                      <div className="flex items-center gap-2 mt-3 text-xs text-gray-400">
                         {article.author && <span>{article.author.name}</span>}
                         {article.publishedAt && (
                           <>
@@ -83,44 +82,34 @@ export default async function Home() {
               ))}
             </div>
           )}
-
-          <div className="text-center mt-12">
-            <Link
-              href="/makala"
-              className="inline-block border-2 border-primary-500 text-primary-600 hover:bg-primary-500 hover:text-white px-8 py-3 rounded-lg font-semibold transition-all duration-200"
-            >
-              Tazama Makala Zote
-            </Link>
-          </div>
         </div>
       </section>
 
-      <section className="py-20 bg-primary-50">
+      {/* Sermons Section */}
+      <section className="py-16 bg-gray-50">
         <div className="container">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-gold-500 font-semibold text-sm uppercase tracking-wider">Mahubiri</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-primary-700 mt-2 mb-4">
-              Mahubiri ya Hivi Karibuni
-            </h2>
-            <p className="text-gray-600 text-lg">
-              Sikiliza na ujifunze kutoka kwa Neno la Mungu.
-            </p>
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-primary-700">Mahubiri</h2>
+            <Link
+              href="/mahubiri"
+              className="text-primary-600 hover:text-gold-500 font-medium text-sm transition-colors flex items-center gap-1"
+            >
+              Yote <span className="text-lg">→</span>
+            </Link>
           </div>
 
           {data.latestSermons.length === 0 ? (
-            <p className="text-gray-500 text-center py-12">Hakuna mahubiri bado.</p>
+            <p className="text-gray-500 text-center py-8">Hakuna mahubiri bado.</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {data.latestSermons.slice(0, 3).map((sermon: any) => (
                 <Link key={sermon._id} href={`/mahubiri/${sermon.slug.current}`}>
-                  <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-300 p-6 border-l-4 border-gold-400 hover:border-gold-600">
-                    <h3 className="text-xl font-bold text-primary-700 mb-2 group-hover:text-gold-500 transition-colors">
+                  <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-300 p-5 border-l-4 border-gold-300 hover:border-gold-500">
+                    <h3 className="text-lg font-bold text-primary-700 group-hover:text-gold-500 transition-colors">
                       {sermon.title}
                     </h3>
-                    <p className="text-gray-600 text-sm">
-                      {sermon.speaker?.name || 'Mhubiri'}
-                    </p>
-                    <div className="flex items-center gap-3 mt-3 text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 mt-1">{sermon.speaker?.name || 'Mhubiri'}</p>
+                    <div className="flex items-center gap-3 mt-2 text-xs text-gray-400">
                       <span>
                         {new Date(sermon.dateDelivered).toLocaleDateString('sw', {
                           day: 'numeric',
@@ -131,55 +120,45 @@ export default async function Home() {
                       {sermon.media?.type && (
                         <>
                           <span className="w-1 h-1 bg-gray-300 rounded-full" />
-                          <span className="text-gold-600 font-medium">
+                          <span className="text-gold-500 font-medium">
                             {sermon.media.type === 'audio' ? 'Audio' : 'Video'}
                           </span>
                         </>
                       )}
                     </div>
                     {sermon.summary && (
-                      <p className="text-gray-600 text-sm mt-3 line-clamp-2">
-                        {sermon.summary}
-                      </p>
+                      <p className="text-gray-600 text-sm mt-2 line-clamp-2">{sermon.summary}</p>
                     )}
                   </div>
                 </Link>
               ))}
             </div>
           )}
-
-          <div className="text-center mt-12">
-            <Link
-              href="/mahubiri"
-              className="inline-block border-2 border-primary-500 text-primary-600 hover:bg-primary-500 hover:text-white px-8 py-3 rounded-lg font-semibold transition-all duration-200"
-            >
-              Tazama Mahubiri Yote
-            </Link>
-          </div>
         </div>
       </section>
 
-      <section className="py-20 bg-white">
+      {/* Events Section */}
+      <section className="py-16 bg-white">
         <div className="container">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-gold-500 font-semibold text-sm uppercase tracking-wider">Matukio</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-primary-700 mt-2 mb-4">
-              Matukio Yajayo
-            </h2>
-            <p className="text-gray-600 text-lg">
-              Jiunge nasi katika matukio yetu yajayo.
-            </p>
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-primary-700">Matukio</h2>
+            <Link
+              href="/matukio"
+              className="text-primary-600 hover:text-gold-500 font-medium text-sm transition-colors flex items-center gap-1"
+            >
+              Yote <span className="text-lg">→</span>
+            </Link>
           </div>
 
           {data.upcomingEvents.length === 0 ? (
-            <p className="text-gray-500 text-center py-12">Hakuna matukio yajayo.</p>
+            <p className="text-gray-500 text-center py-8">Hakuna matukio yajayo.</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {data.upcomingEvents.slice(0, 3).map((event: any) => (
                 <Link key={event._id} href={`/matukio/${event.slug.current}`}>
-                  <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-300 overflow-hidden">
+                  <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-300 overflow-hidden border border-gray-50">
                     {event.coverImage && (
-                      <div className="relative h-48 overflow-hidden bg-gray-100">
+                      <div className="relative h-44 overflow-hidden bg-gray-100">
                         <Image
                           src={urlFor(event.coverImage).width(600).height(300).url()}
                           alt={event.title}
@@ -189,23 +168,22 @@ export default async function Home() {
                         />
                       </div>
                     )}
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold text-primary-700 mb-2 group-hover:text-gold-500 transition-colors">
+                    <div className="p-5">
+                      <h3 className="text-lg font-bold text-primary-700 group-hover:text-gold-500 transition-colors">
                         {event.title}
                       </h3>
-                      <div className="space-y-1 text-sm text-gray-600">
-                        <p>
-                          {new Date(event.startDateTime).toLocaleDateString('sw', {
-                            weekday: 'long',
-                            day: 'numeric',
-                            month: 'long',
-                            year: 'numeric',
-                          })}
-                        </p>
-                        {event.location && <p className="text-gray-500">{event.location}</p>}
-                      </div>
+                      <p className="text-sm text-gray-500 mt-1">
+                        {new Date(event.startDateTime).toLocaleDateString('sw', {
+                          day: 'numeric',
+                          month: 'short',
+                          year: 'numeric',
+                        })}
+                      </p>
+                      {event.location && (
+                        <p className="text-xs text-gray-400 mt-1">{event.location}</p>
+                      )}
                       {event.recurring?.isRecurring && (
-                        <p className="text-xs text-gold-600 font-medium mt-2">
+                        <p className="text-xs text-gold-500 font-medium mt-2">
                           {event.recurring.rule || 'Mara kwa mara'}
                         </p>
                       )}
@@ -215,15 +193,6 @@ export default async function Home() {
               ))}
             </div>
           )}
-
-          <div className="text-center mt-12">
-            <Link
-              href="/matukio"
-              className="inline-block border-2 border-primary-500 text-primary-600 hover:bg-primary-500 hover:text-white px-8 py-3 rounded-lg font-semibold transition-all duration-200"
-            >
-              Tazama Matukio Yote
-            </Link>
-          </div>
         </div>
       </section>
     </div>
