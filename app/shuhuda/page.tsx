@@ -29,12 +29,12 @@ export default async function ShuhudaPage() {
             <Link key={item._id} href={`/shuhuda/${item.slug.current}`}>
               <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-300 overflow-hidden border border-gray-50">
                 {item.images && item.images.length > 0 && (
-                  <div className="relative h-48 overflow-hidden bg-gray-100">
+                  <div className="relative aspect-video overflow-hidden bg-gray-100">
                     <Image
-                      src={urlFor(item.images[0]).width(600).height(350).url()}
+                      src={urlFor(item.images[0]).width(600).height(338).url()}
                       alt={item.title}
                       fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="object-contain group-hover:scale-105 transition-transform duration-500"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                   </div>
@@ -43,9 +43,7 @@ export default async function ShuhudaPage() {
                   <h3 className="text-lg font-bold text-primary-700 group-hover:text-gold-500 transition-colors line-clamp-2">
                     {item.title}
                   </h3>
-                  {item.person && (
-                    <p className="text-sm text-gray-500 mt-1">Na {item.person}</p>
-                  )}
+                  {item.person && <p className="text-sm text-gray-500 mt-1">Na {item.person}</p>}
                   {item.date && (
                     <p className="text-xs text-gray-400 mt-1">
                       {new Date(item.date).toLocaleDateString('sw', {
@@ -63,7 +61,9 @@ export default async function ShuhudaPage() {
                       <span className="text-xs bg-primary-50 text-primary-700 px-2 py-0.5 rounded-full">🎬 Video</span>
                     )}
                     {item.images && item.images.length > 1 && (
-                      <span className="text-xs bg-primary-50 text-primary-700 px-2 py-0.5 rounded-full">📷 Picha ({item.images.length})</span>
+                      <span className="text-xs bg-primary-50 text-primary-700 px-2 py-0.5 rounded-full">
+                        📷 Picha ({item.images.length})
+                      </span>
                     )}
                   </div>
                 </div>

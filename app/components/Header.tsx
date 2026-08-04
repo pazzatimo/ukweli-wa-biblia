@@ -32,6 +32,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
                   fill
                   sizes="48px"
                   className="object-cover"
+                  priority // <-- Added for LCP optimization
                 />
               </div>
             ) : (

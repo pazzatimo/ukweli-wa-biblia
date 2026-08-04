@@ -31,12 +31,12 @@ export default async function ArticlePage({ params }: PageProps) {
     <article className="container mx-auto px-4 py-16 max-w-4xl">
       <header className="mb-8">
         {article.coverImage && (
-          <div className="relative w-full h-96 mb-6">
+          <div className="relative w-full aspect-video mb-6 rounded-lg overflow-hidden bg-gray-100">
             <Image
-              src={urlFor(article.coverImage).width(1200).height(600).url()}
+              src={urlFor(article.coverImage).width(1200).height(675).url()}
               alt={article.title}
               fill
-              className="object-cover rounded-lg"
+              className="object-contain"
               priority
               sizes="(max-width: 768px) 100vw, 1200px"
             />

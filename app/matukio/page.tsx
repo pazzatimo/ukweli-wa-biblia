@@ -15,7 +15,6 @@ async function getEvents() {
 
 export default async function EventsPage() {
   const events = await getEvents()
-
   const now = new Date()
   const upcoming = events.filter((e: any) => new Date(e.startDateTime) >= now)
   const past = events.filter((e: any) => new Date(e.startDateTime) < now)
@@ -36,12 +35,12 @@ export default async function EventsPage() {
                   <Link key={event._id} href={`/matukio/${event.slug.current}`}>
                     <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-300 overflow-hidden border border-gray-50">
                       {event.coverImage && (
-                        <div className="relative h-44 overflow-hidden bg-gray-100">
+                        <div className="relative aspect-video overflow-hidden bg-gray-100">
                           <Image
-                            src={urlFor(event.coverImage).width(600).height(300).url()}
+                            src={urlFor(event.coverImage).width(600).height(338).url()}
                             alt={event.title}
                             fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            className="object-contain group-hover:scale-105 transition-transform duration-500"
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           />
                         </div>
@@ -58,9 +57,7 @@ export default async function EventsPage() {
                             year: 'numeric',
                           })}
                         </p>
-                        {event.location && (
-                          <p className="text-xs text-gray-400 mt-1">{event.location}</p>
-                        )}
+                        {event.location && <p className="text-xs text-gray-400 mt-1">{event.location}</p>}
                         {event.recurring?.isRecurring && (
                           <p className="text-xs text-gold-500 font-medium mt-2">
                             {event.recurring.rule || 'Mara kwa mara'}
@@ -82,12 +79,12 @@ export default async function EventsPage() {
                   <Link key={event._id} href={`/matukio/${event.slug.current}`}>
                     <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-300 overflow-hidden border border-gray-50 opacity-75">
                       {event.coverImage && (
-                        <div className="relative h-44 overflow-hidden bg-gray-100">
+                        <div className="relative aspect-video overflow-hidden bg-gray-100">
                           <Image
-                            src={urlFor(event.coverImage).width(600).height(300).url()}
+                            src={urlFor(event.coverImage).width(600).height(338).url()}
                             alt={event.title}
                             fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            className="object-contain group-hover:scale-105 transition-transform duration-500"
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           />
                         </div>
@@ -103,9 +100,7 @@ export default async function EventsPage() {
                             year: 'numeric',
                           })}
                         </p>
-                        {event.location && (
-                          <p className="text-xs text-gray-400 mt-1">{event.location}</p>
-                        )}
+                        {event.location && <p className="text-xs text-gray-400 mt-1">{event.location}</p>}
                       </div>
                     </div>
                   </Link>

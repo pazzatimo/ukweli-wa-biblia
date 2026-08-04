@@ -40,21 +40,19 @@ export default async function ShuhudaPage({ params }: PageProps) {
         <article className="mt-4 bg-white rounded-2xl shadow-soft p-6 md:p-8">
           <header className="mb-6">
             {item.images && item.images.length > 0 && (
-              <div className="relative w-full h-80 mb-6 rounded-lg overflow-hidden bg-gray-100">
+              <div className="relative w-full aspect-video mb-6 rounded-lg overflow-hidden bg-gray-100">
                 <Image
-                  src={urlFor(item.images[0]).width(1200).height(600).url()}
+                  src={urlFor(item.images[0]).width(1200).height(675).url()}
                   alt={item.title}
                   fill
-                  className="object-cover"
+                  className="object-contain"
                   priority
                   sizes="(max-width: 768px) 100vw, 1200px"
                 />
               </div>
             )}
             <h1 className="text-2xl md:text-3xl font-bold text-primary-700">{item.title}</h1>
-            {item.person && (
-              <p className="text-sm text-gray-500 mt-1">Na {item.person}</p>
-            )}
+            {item.person && <p className="text-sm text-gray-500 mt-1">Na {item.person}</p>}
             {item.date && (
               <p className="text-xs text-gray-400 mt-1">
                 {new Date(item.date).toLocaleDateString('sw', {
@@ -66,25 +64,21 @@ export default async function ShuhudaPage({ params }: PageProps) {
             )}
           </header>
 
-          {/* Audio Player */}
           {item.audio && (
             <div className="mb-6">
               <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Sauti</h3>
               <audio controls className="w-full h-10">
                 <source src={urlFor(item.audio).url()} />
-                Your browser does not support the audio element.
               </audio>
             </div>
           )}
 
-          {/* Video */}
           {item.video && (item.video.file || item.video.url) && (
             <div className="mb-6">
               <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Video</h3>
               {item.video.file && (
                 <video controls className="w-full rounded-lg">
                   <source src={urlFor(item.video.file).url()} />
-                  Your browser does not support the video element.
                 </video>
               )}
               {item.video.url && (
@@ -100,14 +94,12 @@ export default async function ShuhudaPage({ params }: PageProps) {
             </div>
           )}
 
-          {/* Description / Rich Text */}
           {item.description && (
             <div className="prose prose-lg max-w-none text-gray-700">
               <PortableText value={item.description} />
             </div>
           )}
 
-          {/* Additional images gallery */}
           {item.images && item.images.length > 1 && (
             <div className="mt-8">
               <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Picha Zote</h3>
@@ -118,7 +110,7 @@ export default async function ShuhudaPage({ params }: PageProps) {
                       src={urlFor(image).width(400).height(400).url()}
                       alt={`${item.title} - picha ${idx + 2}`}
                       fill
-                      className="object-cover"
+                      className="object-contain"
                       sizes="(max-width: 768px) 50vw, 33vw"
                     />
                   </div>

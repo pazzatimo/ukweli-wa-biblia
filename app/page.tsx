@@ -25,15 +25,12 @@ export default async function Home() {
     <div>
       <HeroSlider />
 
-      {/* Articles Section */}
+      {/* Articles */}
       <section className="py-16 bg-white">
         <div className="container">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl md:text-3xl font-bold text-primary-700">Makala</h2>
-            <Link
-              href="/makala"
-              className="text-primary-600 hover:text-gold-500 font-medium text-sm transition-colors flex items-center gap-1"
-            >
+            <Link href="/makala" className="text-primary-600 hover:text-gold-500 font-medium text-sm flex items-center gap-1">
               Tazama Zote <span className="text-lg">→</span>
             </Link>
           </div>
@@ -46,12 +43,12 @@ export default async function Home() {
                 <Link key={article._id} href={`/makala/${article.slug.current}`}>
                   <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-300 overflow-hidden border border-gray-50">
                     {article.coverImage && (
-                      <div className="relative h-52 overflow-hidden bg-gray-100">
+                      <div className="relative aspect-video overflow-hidden bg-gray-100">
                         <Image
-                          src={urlFor(article.coverImage).width(600).height(350).url()}
+                          src={urlFor(article.coverImage).width(600).height(338).url()}
                           alt={article.title}
                           fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="object-contain group-hover:scale-105 transition-transform duration-500"
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                       </div>
@@ -85,19 +82,15 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Sermons Section */}
+      {/* Sermons */}
       <section className="py-16 bg-gray-50">
         <div className="container">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl md:text-3xl font-bold text-primary-700">Mahubiri</h2>
-            <Link
-              href="/mahubiri"
-              className="text-primary-600 hover:text-gold-500 font-medium text-sm transition-colors flex items-center gap-1"
-            >
+            <Link href="/mahubiri" className="text-primary-600 hover:text-gold-500 font-medium text-sm flex items-center gap-1">
               Tazama Yote <span className="text-lg">→</span>
             </Link>
           </div>
-
           {data.latestSermons.length === 0 ? (
             <p className="text-gray-500 text-center py-8">Hakuna mahubiri bado.</p>
           ) : (
@@ -137,19 +130,15 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Events Section */}
+      {/* Events */}
       <section className="py-16 bg-white">
         <div className="container">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl md:text-3xl font-bold text-primary-700">Matukio</h2>
-            <Link
-              href="/matukio"
-              className="text-primary-600 hover:text-gold-500 font-medium text-sm transition-colors flex items-center gap-1"
-            >
-              Yote <span className="text-lg">→</span>
+            <Link href="/matukio" className="text-primary-600 hover:text-gold-500 font-medium text-sm flex items-center gap-1">
+              Tazama Yote <span className="text-lg">→</span>
             </Link>
           </div>
-
           {data.upcomingEvents.length === 0 ? (
             <p className="text-gray-500 text-center py-8">Hakuna matukio yajayo.</p>
           ) : (
@@ -158,12 +147,12 @@ export default async function Home() {
                 <Link key={event._id} href={`/matukio/${event.slug.current}`}>
                   <div className="group bg-white rounded-xl shadow-soft hover:shadow-medium transition-all duration-300 overflow-hidden border border-gray-50">
                     {event.coverImage && (
-                      <div className="relative h-44 overflow-hidden bg-gray-100">
+                      <div className="relative aspect-video overflow-hidden bg-gray-100">
                         <Image
-                          src={urlFor(event.coverImage).width(600).height(300).url()}
+                          src={urlFor(event.coverImage).width(600).height(338).url()}
                           alt={event.title}
                           fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="object-contain group-hover:scale-105 transition-transform duration-500"
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                       </div>
@@ -179,9 +168,7 @@ export default async function Home() {
                           year: 'numeric',
                         })}
                       </p>
-                      {event.location && (
-                        <p className="text-xs text-gray-400 mt-1">{event.location}</p>
-                      )}
+                      {event.location && <p className="text-xs text-gray-400 mt-1">{event.location}</p>}
                       {event.recurring?.isRecurring && (
                         <p className="text-xs text-gold-500 font-medium mt-2">
                           {event.recurring.rule || 'Mara kwa mara'}
