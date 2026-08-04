@@ -10,6 +10,7 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 import 'swiper/css/effect-fade'
 
+// Add or remove slides here to match your images
 const slides = [
   {
     id: 1,
@@ -36,6 +37,24 @@ const slides = [
     description: 'Tunakukaribisha katika familia yetu ya imani, pamoja tunakua katika neema.',
     image: '/images/hero-3.jpg',
     ctaText: 'Wasiliana Nasi',
+    ctaLink: '/wasiliana',
+  },
+  {
+    id: 4,
+    title: 'Ibada ya Kweli',
+    subtitle: 'Kumwabudu Mungu kwa Roho na Kweli',
+    description: 'Kanisa linaloabudu kwa nguvu zote na kuheshimu Neno la Mungu.',
+    image: '/images/hero-4.jpg',
+    ctaText: 'Soma Makala',
+    ctaLink: '/makala',
+  },
+  {
+    id: 5,
+    title: 'Furaha ya Wokovu',
+    subtitle: 'Uzima wa Milele katika Kristo',
+    description: 'Tuna furaha kubwa kukutana nawe na kushiriki neema ya Mungu.',
+    image: '/images/hero-5.jpg',
+    ctaText: 'Jiunge Nasi',
     ctaLink: '/wasiliana',
   },
 ]
@@ -76,8 +95,6 @@ export function HeroSlider() {
               <div className="absolute inset-0 bg-black/40" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
             </div>
-
-            {/* Centered content */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-white">

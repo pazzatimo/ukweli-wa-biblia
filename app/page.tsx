@@ -23,10 +23,8 @@ export default async function Home() {
 
   return (
     <div>
-      {/* Hero Slider */}
       <HeroSlider />
 
-      {/* Featured Section - Latest Articles */}
       <section className="py-20 bg-white">
         <div className="container">
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -53,6 +51,7 @@ export default async function Home() {
                           alt={article.title}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                       </div>
                     )}
@@ -64,9 +63,7 @@ export default async function Home() {
                         {article.excerpt}
                       </p>
                       <div className="flex items-center gap-3 text-sm text-gray-500">
-                        {article.author && (
-                          <span>{article.author.name}</span>
-                        )}
+                        {article.author && <span>{article.author.name}</span>}
                         {article.publishedAt && (
                           <>
                             <span className="w-1 h-1 bg-gray-300 rounded-full" />
@@ -98,7 +95,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Sermons Section */}
       <section className="py-20 bg-primary-50">
         <div className="container">
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -163,7 +159,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Events Section */}
       <section className="py-20 bg-white">
         <div className="container">
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -190,6 +185,7 @@ export default async function Home() {
                           alt={event.title}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                       </div>
                     )}
@@ -206,9 +202,7 @@ export default async function Home() {
                             year: 'numeric',
                           })}
                         </p>
-                        {event.location && (
-                          <p className="text-gray-500">{event.location}</p>
-                        )}
+                        {event.location && <p className="text-gray-500">{event.location}</p>}
                       </div>
                       {event.recurring?.isRecurring && (
                         <p className="text-xs text-gold-600 font-medium mt-2">

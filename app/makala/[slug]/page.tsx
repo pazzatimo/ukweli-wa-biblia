@@ -38,6 +38,7 @@ export default async function ArticlePage({ params }: PageProps) {
               fill
               className="object-cover rounded-lg"
               priority
+              sizes="(max-width: 768px) 100vw, 1200px"
             />
           </div>
         )}

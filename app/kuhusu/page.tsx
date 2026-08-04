@@ -42,7 +42,6 @@ export default async function AboutPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
       <section className="bg-primary-700 text-white py-20">
         <div className="container text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
@@ -52,7 +51,6 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* Description */}
       {about.description && (
         <section className="container py-16 max-w-4xl">
           <div className="bg-white rounded-2xl shadow-soft p-8 md:p-12">
@@ -63,7 +61,6 @@ export default async function AboutPage() {
         </section>
       )}
 
-      {/* Mission & Vision */}
       {(about.mission || about.vision) && (
         <section className="container py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -95,15 +92,16 @@ export default async function AboutPage() {
         </section>
       )}
 
-      {/* Core Beliefs */}
       {about.coreBeliefs && about.coreBeliefs.length > 0 && (
         <section className="bg-primary-50 py-16">
           <div className="container">
             <div className="text-center max-w-3xl mx-auto mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-primary-700 mb-4">
-                Msingi ya Imani Yetu
+                Imani Zetu
               </h2>
-              
+              <p className="text-gray-600 text-lg">
+                Tunashikilia imani hizi kama msingi wa mafundisho yetu.
+              </p>
               <div className="w-16 h-1 bg-gold-400 mx-auto mt-4"></div>
             </div>
 
@@ -128,14 +126,15 @@ export default async function AboutPage() {
         </section>
       )}
 
-      {/* Leadership */}
       {about.leadership && about.leadership.length > 0 && (
         <section className="container py-16">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-primary-700 mb-4">
-              Viongozi
+              Timu ya Uongozi
             </h2>
-            
+            <p className="text-gray-600 text-lg">
+              Tunajivunia kuwa na viongozi waliobeba mzigo wa kuhudumia Neno la Mungu.
+            </p>
             <div className="w-16 h-1 bg-gold-400 mx-auto mt-4"></div>
           </div>
 
