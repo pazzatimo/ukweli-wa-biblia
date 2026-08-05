@@ -56,11 +56,21 @@ export default async function EventsPage() {
                             month: 'short',
                             year: 'numeric',
                           })}
+                          {event.endDateTime && (
+                            <span>
+                              {' '}
+                              – {new Date(event.endDateTime).toLocaleDateString('sw', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric',
+                              })}
+                            </span>
+                          )}
                         </p>
                         {event.location && <p className="text-xs text-gray-400 mt-1">{event.location}</p>}
                         {event.recurring?.isRecurring && (
-                          <p className="text-xs text-gold-500 font-medium mt-2">
-                            {event.recurring.rule || 'Mara kwa mara'}
+                          <p className="text-xs text-gold-600 font-medium mt-2">
+                            🔄 {event.recurring.rule || 'Linarudia'}
                           </p>
                         )}
                       </div>
@@ -101,6 +111,11 @@ export default async function EventsPage() {
                           })}
                         </p>
                         {event.location && <p className="text-xs text-gray-400 mt-1">{event.location}</p>}
+                        {event.recurring?.isRecurring && (
+                          <p className="text-xs text-gold-600 font-medium mt-2">
+                            🔄 {event.recurring.rule || 'Linarudia'}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </Link>

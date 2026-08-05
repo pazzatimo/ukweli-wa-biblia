@@ -73,8 +73,8 @@ export default async function EventPage({ params }: PageProps) {
             </p>
           )}
           {event.recurring?.isRecurring && (
-            <p className="text-blue-600">
-              <strong>Mara kwa mara:</strong> {event.recurring.rule || 'Ndiyo'}
+            <p className="text-gold-600 font-medium">
+              <strong>Linarudia:</strong> {event.recurring.rule || 'Ndiyo'}
             </p>
           )}
         </div>
