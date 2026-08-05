@@ -90,8 +90,8 @@ export default async function AboutPage() {
         <section className="bg-primary-50 py-16">
           <div className="container">
             <div className="text-center max-w-3xl mx-auto mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-primary-700 mb-4">Imani Zetu</h2>
-              <p className="text-gray-600 text-lg">Tunashikilia imani hizi kama msingi wa mafundisho yetu.</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-primary-700 mb-4">Msingi wa Imani Yetu</h2>
+              
               <div className="w-16 h-1 bg-gold-400 mx-auto mt-4"></div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -113,8 +113,8 @@ export default async function AboutPage() {
       {about.leadership && about.leadership.length > 0 && (
         <section className="container py-16">
           <div className="text-center max-w-3xl mx-auto mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary-700 mb-4">Timu ya Uongozi</h2>
-            <p className="text-gray-600 text-lg">Tunajivunia kuwa na viongozi waliobeba mzigo wa kuhudumia Neno la Mungu.</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-primary-700 mb-4">Viongozi</h2>
+            
             <div className="w-16 h-1 bg-gold-400 mx-auto mt-4"></div>
           </div>
 

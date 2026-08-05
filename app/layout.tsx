@@ -21,13 +21,13 @@ const manrope = Manrope({
 })
 
 export const metadata: Metadata = {
-  title: 'Ukweli Wa Biblia - Kutangaza Neno la Mungu kwa uaminifu',
-  description: 'Ukweli Wa Biblia ni kanisa linalojitolea kwenye uinjilisti, kufundisha Neno la Mungu, na kuweka imani katika Kristo.',
-  keywords: 'kanisa, ibada, imani, Biblia, Ukweli wa Biblia, mahubiri, makala, nyimbo',
+  title: 'Ukweli Wa Biblia - Ufunuo 10:7',
+  description: 'Sisi ni kanisa dogo amabalo sio dhehebu lenye makao yake Maeneo ya Kigurunyembe njia ya kuelekea Bigwa, Morogoro. Kwa neema ya Mungu, dhamira yetu ni kuhubiri Injili ya Yesu Kristo bila kulegeza masharti. Mioyo yetu inaridhika pale tunapoona uhusiano wa kweli wa kiroho baina ya Mungu na wanadamu umeanzishwa, ambapo wanadamu wanakuwa viumbe vipya katika Kristo, wakiwa wamejazwa na Roho Wake na kuishi kulingana na Neno Lake.',
+  keywords: 'kanisa, ibada, imani, Biblia, Ukweli wa Biblia, Ubatizo wa kweli, mahubiri, makala, nyimbo',
   authors: [{ name: 'Ukweli Wa Biblia' }],
   openGraph: {
     title: 'Ukweli Wa Biblia',
-    description: 'Kutangaza Neno la Mungu kwa uaminifu',
+    description: 'Malaki 4:5-6',
     url: 'https://ukweliwabiblia.com',
     siteName: 'Ukweli Wa Biblia',
     locale: 'sw',
@@ -43,7 +43,7 @@ async function getSiteSettings() {
     const settings = await client.fetch(siteSettingsQuery)
     return settings || {
       siteTitle: 'Ukweli Wa Biblia',
-      siteDescription: 'Kutangaza Neno la Mungu kwa uaminifu',
+      siteDescription: 'Malaki 4:5-6',
       navigation: [
         { label: 'Nyumbani', url: '/' },
         { label: 'Makala', url: '/makala' },
@@ -65,7 +65,7 @@ async function getSiteSettings() {
     console.error('Failed to fetch site settings:', error)
     return {
       siteTitle: 'Ukweli Wa Biblia',
-      siteDescription: 'Kutangaza Neno la Mungu kwa uaminifu',
+      siteDescription: 'Malaki 4:5-6',
       navigation: [
         { label: 'Nyumbani', url: '/' },
         { label: 'Makala', url: '/makala' },

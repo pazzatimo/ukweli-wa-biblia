@@ -72,9 +72,7 @@ export default async function MediaPage() {
       <section className="bg-primary-700 text-white py-16">
         <div className="container text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">{media.title}</h1>
-          <p className="text-lg md:text-xl opacity-90 max-w-2xl mx-auto">
-            Gundua nyimbo, video, na nyaraka zetu.
-          </p>
+          
           <div className="w-24 h-1 bg-gold-400 mx-auto mt-4"></div>
         </div>
       </section>
