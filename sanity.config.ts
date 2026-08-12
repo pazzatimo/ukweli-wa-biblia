@@ -1,15 +1,11 @@
-"use client";
+import { defineCliConfig } from 'sanity/cli'
 
-import { defineConfig } from 'sanity'
-import { structureTool } from 'sanity/structure'
-import { visionTool } from '@sanity/vision'
-import { schemaTypes } from './sanity/schemaTypes'
-
-export default defineConfig({
-  name: 'default',
-  title: 'Ukweli Wa Biblia',
-  projectId: '9wif6gxk',
-  dataset: 'production',
-  plugins: [structureTool(), visionTool()],
-  schema: { types: schemaTypes },
+export default defineCliConfig({
+  api: {
+    projectId: '9wif6gxk',
+    dataset: 'production',
+  },
+  deployment: {
+    appId: 'c40hxswwez8mh72cyf8yikg6',
+  },
 })
