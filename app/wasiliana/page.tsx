@@ -39,21 +39,26 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Banner */}
-      <section className="bg-primary-700 text-white py-16">
+      {/* Header – Clean & Minimal */}
+      <section className="relative bg-gradient-to-b from-primary-50 to-white py-16 border-b border-primary-100/50">
         <div className="container text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Wasiliana Nasi</h1>
-          <p className="text-lg md:text-xl opacity-90 max-w-2xl mx-auto">
-            Kama una maswali tafadhali wasiliana nasi.
+          <span className="inline-block px-4 py-1 bg-primary-100/80 text-primary-700 text-sm font-semibold rounded-full uppercase tracking-wider mb-3">
+            Wasiliana Nasi
+          </span>
+          <h1 className="text-4xl md:text-5xl font-bold text-primary-800 mb-4">
+            Tuwasiliane
+          </h1>
+          <p className="text-lg text-primary-600/80 max-w-2xl mx-auto">
+            Tuma ujumbe kwetu, tutajibu haraka iwezekanavyo.
           </p>
-          <div className="w-24 h-1 bg-gold-400 mx-auto mt-4"></div>
+          <div className="w-24 h-1 bg-gold-400 mx-auto mt-4 rounded-full" />
         </div>
       </section>
 
-      {/* Main Content - Two Column Layout */}
-      <section className="container py-16">
+      {/* Main Content */}
+      <section className="container py-16 max-w-5xl">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Form Column - 3/5 width */}
+          {/* Form */}
           <div className="lg:col-span-3">
             <div className="bg-white rounded-2xl shadow-soft p-8 md:p-10">
               <h2 className="text-2xl font-bold text-primary-700 mb-6">Tuma Ujumbe</h2>
@@ -145,9 +150,8 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Info Column - 2/5 width */}
+          {/* Info Cards */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Phone Number */}
             <div className="bg-white rounded-2xl shadow-soft p-6 border-l-4 border-gold-400">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-primary-50 rounded-full flex items-center justify-center flex-shrink-0">
@@ -157,13 +161,12 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 font-medium">Simu</p>
-                  <p className="text-lg font-bold text-primary-700">+255 686 181 681</p>
+                  <p className="text-lg font-bold text-primary-700">+255 123 456 789</p>
                   <p className="text-sm text-gray-500 mt-1">Piga simu kwa maswali yako</p>
                 </div>
               </div>
             </div>
 
-            {/* Service Times */}
             <div className="bg-white rounded-2xl shadow-soft p-6 border-l-4 border-primary-400">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-primary-50 rounded-full flex items-center justify-center flex-shrink-0">
@@ -176,19 +179,21 @@ export default function ContactPage() {
                   <div className="mt-2 space-y-1">
                     <p className="text-sm">
                       <span className="font-semibold text-primary-700">Jumapili:</span>
-                      <span className="text-gray-600 ml-2">2:00 Asubuhi - 6:30 Mchana</span>
+                      <span className="text-gray-600 ml-2">9:00 AM - 12:00 PM</span>
                     </p>
-                    
+                    <p className="text-sm">
+                      <span className="font-semibold text-primary-700">Jumatano:</span>
+                      <span className="text-gray-600 ml-2">6:00 PM - 8:00 PM</span>
+                    </p>
                     <p className="text-sm">
                       <span className="font-semibold text-primary-700">Ijumaa:</span>
-                      <span className="text-gray-600 ml-2">2:00 Usiku - 12:00 Asubuhi</span>
+                      <span className="text-gray-600 ml-2">6:00 PM - 7:30 PM</span>
                     </p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Location with Google Maps Link */}
             <div className="bg-white rounded-2xl shadow-soft p-6 border-l-4 border-gold-400">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-primary-50 rounded-full flex items-center justify-center flex-shrink-0">
@@ -199,9 +204,9 @@ export default function ContactPage() {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm text-gray-500 font-medium">Mahali Tulipo</p>
-                  <p className="text-gray-700 font-medium">Kanisa letu liko katika eneo la Kigurunyembe, Morogoro. Kilomita tano kutoka katikati mwa mji wa Morogoro kupitia barabara ya zamani ya Dar es Salaam karibu na Chuo cha Ualimu Morogoro.</p>
+                  <p className="text-gray-700 font-medium">Dar es Salaam, Tanzania</p>
                   <a
-                    href="https://www.google.com/maps/place/End-Time+Message+Church+-+Morogoro/@-6.820435,37.698408,15z/data=!4m6!3m5!1s0x185a5de9eb54e29d:0xe391e727a43d381e!8m2!3d-6.8204346!4d37.6984083!16s%2Fg%2F11fn50z41d?entry=tts&g_ep=EgoyMDI1MDUxNS4xIPu8ASoASAFQAw%3D%3D&skid=881169b4-4a75-4e6d-a056-de88099ba213"
+                    href="https://www.google.com/maps/place/Dar+es+Salaam,+Tanzania/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-block mt-2 text-primary-600 hover:text-gold-500 font-medium text-sm transition-colors"

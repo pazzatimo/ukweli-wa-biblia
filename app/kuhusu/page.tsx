@@ -42,13 +42,27 @@ export default async function AboutPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <section className="bg-primary-700 text-white py-20">
-        <div className="container text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">{about.title}</h1>
-          <div className="w-24 h-1 bg-gold-400 mx-auto"></div>
+      {/* Header – Warm & Inviting */}
+      <section className="relative bg-gradient-to-br from-amber-50 to-yellow-100 py-16 overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-primary-300 rounded-full blur-3xl" />
+        </div>
+        <div className="container text-center relative z-10">
+          <div className="inline-block px-6 py-1 bg-gold-500/20 rounded-full text-gold-700 text-sm font-semibold uppercase tracking-wider mb-3">
+            Kuhusu Sisi
+          </div>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-800 mb-4">
+            {about.title}
+          </h1>
+          <div className="w-24 h-1 bg-gold-500 mx-auto rounded-full" />
+          <p className="mt-4 text-lg text-primary-700/80 max-w-2xl mx-auto">
+            Tunajivunia kuhudumu katika Neno la Mungu
+          </p>
         </div>
       </section>
 
+      {/* Description */}
       {about.description && (
         <section className="container py-16 max-w-4xl">
           <div className="bg-white rounded-2xl shadow-soft p-8 md:p-12">
@@ -59,12 +73,15 @@ export default async function AboutPage() {
         </section>
       )}
 
+      {/* Mission & Vision */}
       {(about.mission || about.vision) && (
         <section className="container py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {about.mission && (
               <div className="bg-white rounded-2xl shadow-soft p-8 md:p-10 border-t-4 border-gold-400">
-                <h2 className="text-2xl md:text-3xl font-bold text-primary-700 mb-4">Dhamira Yetu</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-primary-700 mb-4">
+                  Dhamira Yetu
+                </h2>
                 <ReadMore>
                   <div className="prose prose-lg max-w-none">
                     <PortableText value={about.mission} />
@@ -74,7 +91,9 @@ export default async function AboutPage() {
             )}
             {about.vision && (
               <div className="bg-white rounded-2xl shadow-soft p-8 md:p-10 border-t-4 border-primary-400">
-                <h2 className="text-2xl md:text-3xl font-bold text-primary-700 mb-4">Maono Yetu</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-primary-700 mb-4">
+                  Maono Yetu
+                </h2>
                 <ReadMore>
                   <div className="prose prose-lg max-w-none">
                     <PortableText value={about.vision} />
@@ -86,18 +105,29 @@ export default async function AboutPage() {
         </section>
       )}
 
+      {/* Core Beliefs */}
       {about.coreBeliefs && about.coreBeliefs.length > 0 && (
         <section className="bg-primary-50 py-16">
           <div className="container">
             <div className="text-center max-w-3xl mx-auto mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-primary-700 mb-4">Msingi wa Imani Yetu</h2>
-              
+              <h2 className="text-3xl md:text-4xl font-bold text-primary-700 mb-4">
+                Imani Zetu
+              </h2>
+              <p className="text-gray-600 text-lg">
+                Tunashikilia imani hizi kama msingi wa mafundisho yetu.
+              </p>
               <div className="w-16 h-1 bg-gold-400 mx-auto mt-4"></div>
             </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {about.coreBeliefs.map((belief: any, index: number) => (
-                <div key={belief._key || index} className="bg-white rounded-2xl shadow-soft p-6 md:p-8 border-l-4 border-gold-400">
-                  <h3 className="text-xl font-bold text-primary-700 mb-3">{index + 1}. {belief.title}</h3>
+                <div
+                  key={belief._key || index}
+                  className="bg-white rounded-2xl shadow-soft p-6 md:p-8 border-l-4 border-gold-400"
+                >
+                  <h3 className="text-xl font-bold text-primary-700 mb-3">
+                    {index + 1}. {belief.title}
+                  </h3>
                   <ReadMore>
                     <div className="prose prose-base max-w-none text-gray-700">
                       {belief.description && <PortableText value={belief.description} />}
@@ -110,17 +140,25 @@ export default async function AboutPage() {
         </section>
       )}
 
+      {/* Leadership */}
       {about.leadership && about.leadership.length > 0 && (
         <section className="container py-16">
           <div className="text-center max-w-3xl mx-auto mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary-700 mb-4">Viongozi</h2>
-            
+            <h2 className="text-3xl md:text-4xl font-bold text-primary-700 mb-4">
+              Timu ya Uongozi
+            </h2>
+            <p className="text-gray-600 text-lg">
+              Tunajivunia kuwa na viongozi waliobeba mzigo wa kuhudumia Neno la Mungu.
+            </p>
             <div className="w-16 h-1 bg-gold-400 mx-auto mt-4"></div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {about.leadership.map((leader: any, index: number) => (
-              <div key={leader._key || index} className="group bg-white rounded-2xl shadow-soft hover:shadow-large transition-all duration-300 overflow-hidden text-center">
+              <div
+                key={leader._key || index}
+                className="group bg-white rounded-2xl shadow-soft hover:shadow-large transition-all duration-300 overflow-hidden text-center"
+              >
                 {leader.photo ? (
                   <div className="relative w-40 h-40 mx-auto mt-8 rounded-full overflow-hidden border-4 border-gold-200 group-hover:border-gold-400 transition-colors duration-300 bg-gray-100">
                     <Image
@@ -133,12 +171,18 @@ export default async function AboutPage() {
                   </div>
                 ) : (
                   <div className="w-40 h-40 mx-auto mt-8 rounded-full bg-primary-100 flex items-center justify-center border-4 border-gold-200">
-                    <span className="text-5xl text-primary-400 font-bold">{leader.name?.charAt(0) || '?'}</span>
+                    <span className="text-5xl text-primary-400 font-bold">
+                      {leader.name?.charAt(0) || '?'}
+                    </span>
                   </div>
                 )}
                 <div className="p-6 pt-4">
-                  <h3 className="text-xl font-bold text-primary-700 mb-1">{leader.name}</h3>
-                  <p className="text-gold-600 font-medium text-sm uppercase tracking-wide">{leader.role}</p>
+                  <h3 className="text-xl font-bold text-primary-700 mb-1">
+                    {leader.name}
+                  </h3>
+                  <p className="text-gold-600 font-medium text-sm uppercase tracking-wide">
+                    {leader.role}
+                  </p>
                   {leader.phone && (
                     <p className="text-sm text-gray-500 mt-3">
                       <a href={`tel:${leader.phone}`} className="hover:text-primary-600 transition-colors">
