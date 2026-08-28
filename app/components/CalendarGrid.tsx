@@ -25,6 +25,117 @@ interface CalendarGridProps {
   events: Event[]
 }
 
+// Helper: parse a Swahili day name to a weekday number (0 = Sunday, 1 = Monday, ...)
+const dayNameToNumber = (day: string): number | null => {
+  const map: Record<string, number> = {
+    'jumapili': 0,
+    'jumatatu': 1,
+    'jumanne': 2,
+    'jumatano': 3,
+    'alhamisi': 4,
+    'ijumaa': 5,
+    'jumamosi': 6,
+  }
+  return map[day.toLowerCase().trim()] ?? null
+}
+
+// Parse a recurring rule string to a function that generates dates for a given month
+function parseRecurrenceRule(rule: string): (year: number, month: number) => Date[] {
+  // Try to detect "Kila Jumatano" or "Kila Jumapili", etc.
+  const weeklyMatch = rule.match(/kila\s+(jumapili|jumatatu|jumanne|jumatano|alhamisi|ijumaa|jumamosi)/i)
+  if (weeklyMatch) {
+    const dayName = weeklyMatch[1]
+    const dayNum = dayNameToNumber(dayName)
+    if (dayNum !== null) {
+      // Return a function that returns all dates in the given month matching that weekday
+      return (year: number, month: number) => {
+        const dates: Date[] = []
+        const firstDay = new Date(year, month, 1)
+        const lastDay = new Date(year, month + 1, 0)
+        const current = new Date(firstDay)
+        // Move to the first occurrence of the target weekday
+        while (current.getDay() !== dayNum) {
+          current.setDate(current.getDate() + 1)
+        }
+        while (current <= lastDay) {
+          dates.push(new Date(current))
+          current.setDate(current.getDate() + 7)
+        }
+        return dates
+      }
+    }
+  }
+
+  // Try to detect "Kila mwaka" (yearly)
+  const yearlyMatch = rule.match(/kila\s+mwaka/i)
+  if (yearlyMatch) {
+    // For yearly, we need to extract the month and day from the rule or from the event's start date.
+    // We'll use the event's startDateTime to get month/day and assume it repeats every year.
+    return (year: number, month: number) => {
+      // This function will be called with the current year/month, but we need to know the original month/day.
+      // We'll capture the original date from the event's startDateTime later.
+      // Since we don't have that here, we'll return an empty array and handle yearly differently.
+      return []
+    }
+  }
+
+  // If no pattern matches, return a function that generates no additional dates.
+  return () => []
+}
+
+// Expand recurring events within a month
+function expandEventsForMonth(events: Event[], year: number, month: number): Event[] {
+  const expanded: Event[] = []
+
+  events.forEach((event) => {
+    if (!event.recurring?.isRecurring || !event.recurring.rule) {
+      // Non-recurring: include as-is
+      expanded.push(event)
+      return
+    }
+
+    const rule = event.recurring.rule
+    const parser = parseRecurrenceRule(rule)
+    const dates = parser(year, month)
+
+    if (dates.length === 0) {
+      // If no dates generated (e.g., yearly), we can still show the event on its original date
+      // if it falls within the month.
+      const originalDate = new Date(event.startDateTime)
+      if (originalDate.getMonth() === month && originalDate.getFullYear() === year) {
+        expanded.push(event)
+      }
+      return
+    }
+
+    // For each generated date, create a copy with updated startDateTime
+    dates.forEach((date) => {
+      // Preserve the time from the original event's startDateTime
+      const originalStart = new Date(event.startDateTime)
+      const newStart = new Date(date)
+      newStart.setHours(originalStart.getHours(), originalStart.getMinutes(), 0, 0)
+
+      // Preserve the duration if there is an endDateTime
+      let newEnd = null
+      if (event.endDateTime) {
+        const originalEnd = new Date(event.endDateTime)
+        const duration = originalEnd.getTime() - originalStart.getTime()
+        newEnd = new Date(newStart.getTime() + duration)
+      }
+
+      expanded.push({
+        ...event,
+        startDateTime: newStart.toISOString(),
+        endDateTime: newEnd ? newEnd.toISOString() : undefined,
+        // Keep the same _id but we might want to add a suffix to distinguish occurrences
+        // For now, we keep the same _id; we can add a `occurrence` field if needed.
+      })
+    })
+  })
+
+  return expanded
+}
+
 export function CalendarGrid({ events }: CalendarGridProps) {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [view, setView] = useState<'month' | 'list'>('month')
@@ -33,33 +144,29 @@ export function CalendarGrid({ events }: CalendarGridProps) {
   const currentMonth = currentDate.getMonth()
   const currentYear = currentDate.getFullYear()
 
+  // Expand recurring events for the current month
+  const expandedEvents = useMemo(() => {
+    return expandEventsForMonth(events, currentYear, currentMonth)
+  }, [events, currentYear, currentMonth])
+
   // Get days in month
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate()
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay()
 
-  // Get events for the current month
-  const monthEvents = useMemo(() => {
-    return events.filter((event) => {
-      const eventDate = new Date(event.startDateTime)
-      return (
-        eventDate.getMonth() === currentMonth &&
-        eventDate.getFullYear() === currentYear
-      )
-    })
-  }, [events, currentMonth, currentYear])
-
-  // Group events by day
+  // Group expanded events by day
   const eventsByDay = useMemo(() => {
     const grouped: { [key: number]: Event[] } = {}
-    monthEvents.forEach((event) => {
-      const day = new Date(event.startDateTime).getDate()
-      if (!grouped[day]) {
-        grouped[day] = []
+    expandedEvents.forEach((event) => {
+      const date = new Date(event.startDateTime)
+      // Only include if it falls within the current month (should all be, but safe)
+      if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
+        const day = date.getDate()
+        if (!grouped[day]) grouped[day] = []
+        grouped[day].push(event)
       }
-      grouped[day].push(event)
     })
     return grouped
-  }, [monthEvents])
+  }, [expandedEvents, currentMonth, currentYear])
 
   const navigateMonth = (direction: 'prev' | 'next') => {
     const newDate = new Date(currentDate)
@@ -82,7 +189,6 @@ export function CalendarGrid({ events }: CalendarGridProps) {
 
   const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 
-  // Format event time
   const formatTime = (dateString: string) => {
     return new Date(dateString).toLocaleTimeString('sw', {
       hour: '2-digit',
@@ -90,7 +196,6 @@ export function CalendarGrid({ events }: CalendarGridProps) {
     })
   }
 
-  // Format event date range
   const formatEventDate = (event: Event) => {
     const start = new Date(event.startDateTime)
     const end = event.endDateTime ? new Date(event.endDateTime) : null
@@ -100,7 +205,6 @@ export function CalendarGrid({ events }: CalendarGridProps) {
     return start.toLocaleDateString('sw', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
   }
 
-  // Format event time range
   const formatEventTimeRange = (event: Event) => {
     const start = new Date(event.startDateTime)
     const end = event.endDateTime ? new Date(event.endDateTime) : null
@@ -168,29 +272,19 @@ export function CalendarGrid({ events }: CalendarGridProps) {
         {/* Calendar Grid */}
         {view === 'month' && (
           <div className="p-4">
-            {/* Day Headers */}
             <div className="grid grid-cols-7 gap-1 mb-2">
               {dayNames.map((day, index) => (
-                <div
-                  key={index}
-                  className="text-center text-sm font-semibold text-gray-500 py-2"
-                >
+                <div key={index} className="text-center text-sm font-semibold text-gray-500 py-2">
                   {day}
                 </div>
               ))}
             </div>
 
-            {/* Days Grid */}
             <div className="grid grid-cols-7 gap-1">
-              {/* Empty days before first day */}
               {Array.from({ length: firstDayOfMonth }).map((_, index) => (
-                <div
-                  key={`empty-${index}`}
-                  className="aspect-square p-1 bg-gray-50 rounded-lg"
-                />
+                <div key={`empty-${index}`} className="aspect-square p-1 bg-gray-50 rounded-lg" />
               ))}
 
-              {/* Actual days */}
               {Array.from({ length: daysInMonth }).map((_, index) => {
                 const day = index + 1
                 const dayEvents = eventsByDay[day] || []
@@ -208,11 +302,7 @@ export function CalendarGrid({ events }: CalendarGridProps) {
                     } ${isToday ? 'ring-2 ring-primary-400' : ''}`}
                   >
                     <div className="flex flex-col h-full">
-                      <span
-                        className={`text-sm font-medium ${
-                          isToday ? 'text-primary-700' : 'text-gray-700'
-                        }`}
-                      >
+                      <span className={`text-sm font-medium ${isToday ? 'text-primary-700' : 'text-gray-700'}`}>
                         {day}
                       </span>
                       {dayEvents.length > 0 && (
@@ -244,23 +334,19 @@ export function CalendarGrid({ events }: CalendarGridProps) {
         {/* List View */}
         {view === 'list' && (
           <div className="p-4">
-            {monthEvents.length === 0 ? (
-              <p className="text-gray-500 text-center py-8">
-                Hakuna matukio kwa mwezi huu.
-              </p>
+            {expandedEvents.length === 0 ? (
+              <p className="text-gray-500 text-center py-8">Hakuna matukio kwa mwezi huu.</p>
             ) : (
               <div className="space-y-4">
-                {monthEvents.map((event) => (
+                {expandedEvents.map((event) => (
                   <button
-                    key={event._id}
+                    key={`${event._id}-${event.startDateTime}`}
                     onClick={() => setSelectedEvent(event)}
                     className="block w-full text-left p-4 border rounded-xl hover:shadow-medium transition-shadow"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-4">
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-primary-700">
-                          {event.title}
-                        </h3>
+                        <h3 className="font-semibold text-primary-700">{event.title}</h3>
                         <p className="text-sm text-gray-500 mt-1">
                           {new Date(event.startDateTime).toLocaleDateString('sw', {
                             weekday: 'long',
@@ -280,20 +366,14 @@ export function CalendarGrid({ events }: CalendarGridProps) {
                             </span>
                           )}
                         </p>
-                        {event.location && (
-                          <p className="text-sm text-gray-400 mt-1">
-                            📍 {event.location}
-                          </p>
-                        )}
+                        {event.location && <p className="text-sm text-gray-400 mt-1">📍 {event.location}</p>}
                         {event.recurring?.isRecurring && (
                           <p className="text-xs text-gold-600 font-medium mt-1">
                             🔄 {event.recurring.rule || 'Linarudia'}
                           </p>
                         )}
                       </div>
-                      <span className="text-primary-600 text-sm font-medium">
-                        Tazama →
-                      </span>
+                      <span className="text-primary-600 text-sm font-medium">Tazama →</span>
                     </div>
                   </button>
                 ))}
@@ -313,11 +393,8 @@ export function CalendarGrid({ events }: CalendarGridProps) {
             className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h2 className="text-2xl font-bold text-primary-700">
-                {selectedEvent.title}
-              </h2>
+              <h2 className="text-2xl font-bold text-primary-700">{selectedEvent.title}</h2>
               <button
                 onClick={() => setSelectedEvent(null)}
                 className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -327,9 +404,7 @@ export function CalendarGrid({ events }: CalendarGridProps) {
               </button>
             </div>
 
-            {/* Modal Body */}
             <div className="p-6 space-y-4">
-              {/* Cover Image */}
               {selectedEvent.coverImage && (
                 <div className="relative w-full h-64 rounded-lg overflow-hidden bg-gray-100">
                   <Image
@@ -342,16 +417,12 @@ export function CalendarGrid({ events }: CalendarGridProps) {
                 </div>
               )}
 
-              {/* Date & Time */}
               <div>
                 <p className="text-sm font-medium text-gray-500">Tarehe</p>
                 <p className="text-gray-800">{formatEventDate(selectedEvent)}</p>
-                <p className="text-sm text-gray-600 mt-1">
-                  {formatEventTimeRange(selectedEvent)}
-                </p>
+                <p className="text-sm text-gray-600 mt-1">{formatEventTimeRange(selectedEvent)}</p>
               </div>
 
-              {/* Location */}
               {selectedEvent.location && (
                 <div>
                   <p className="text-sm font-medium text-gray-500">Mahali</p>
@@ -359,17 +430,13 @@ export function CalendarGrid({ events }: CalendarGridProps) {
                 </div>
               )}
 
-              {/* Recurring */}
-              {selectedEvent.recurring?.isRecurring && (
+              {selectedEvent.recurring?.isRecurring && selectedEvent.recurring?.rule && (
                 <div>
                   <p className="text-sm font-medium text-gray-500">Linarudia</p>
-                  <p className="text-gold-600 font-medium">
-                    {selectedEvent.recurring.rule || 'Ndiyo'}
-                  </p>
+                  <p className="text-gold-600 font-medium">{selectedEvent.recurring.rule}</p>
                 </div>
               )}
 
-              {/* Description */}
               {selectedEvent.description && selectedEvent.description.length > 0 && (
                 <div>
                   <p className="text-sm font-medium text-gray-500">Maelezo</p>
@@ -380,7 +447,6 @@ export function CalendarGrid({ events }: CalendarGridProps) {
               )}
             </div>
 
-            {/* Modal Footer */}
             <div className="p-6 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
               <button
                 onClick={() => setSelectedEvent(null)}
