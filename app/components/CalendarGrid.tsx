@@ -25,7 +25,7 @@ interface CalendarGridProps {
   events: Event[]
 }
 
-// Helper: parse a Swahili day name to a weekday number (0 = Sunday, 1 = Monday, ...)
+// Map Swahili day names to weekday numbers (0 = Sunday)
 const dayNameToNumber = (day: string): number | null => {
   const map: Record<string, number> = {
     'jumapili': 0,
@@ -39,101 +39,10 @@ const dayNameToNumber = (day: string): number | null => {
   return map[day.toLowerCase().trim()] ?? null
 }
 
-// Parse a recurring rule string to a function that generates dates for a given month
-function parseRecurrenceRule(rule: string): (year: number, month: number) => Date[] {
-  // Try to detect "Kila Jumatano" or "Kila Jumapili", etc.
-  const weeklyMatch = rule.match(/kila\s+(jumapili|jumatatu|jumanne|jumatano|alhamisi|ijumaa|jumamosi)/i)
-  if (weeklyMatch) {
-    const dayName = weeklyMatch[1]
-    const dayNum = dayNameToNumber(dayName)
-    if (dayNum !== null) {
-      // Return a function that returns all dates in the given month matching that weekday
-      return (year: number, month: number) => {
-        const dates: Date[] = []
-        const firstDay = new Date(year, month, 1)
-        const lastDay = new Date(year, month + 1, 0)
-        const current = new Date(firstDay)
-        // Move to the first occurrence of the target weekday
-        while (current.getDay() !== dayNum) {
-          current.setDate(current.getDate() + 1)
-        }
-        while (current <= lastDay) {
-          dates.push(new Date(current))
-          current.setDate(current.getDate() + 7)
-        }
-        return dates
-      }
-    }
-  }
-
-  // Try to detect "Kila mwaka" (yearly)
-  const yearlyMatch = rule.match(/kila\s+mwaka/i)
-  if (yearlyMatch) {
-    // For yearly, we need to extract the month and day from the rule or from the event's start date.
-    // We'll use the event's startDateTime to get month/day and assume it repeats every year.
-    return (year: number, month: number) => {
-      // This function will be called with the current year/month, but we need to know the original month/day.
-      // We'll capture the original date from the event's startDateTime later.
-      // Since we don't have that here, we'll return an empty array and handle yearly differently.
-      return []
-    }
-  }
-
-  // If no pattern matches, return a function that generates no additional dates.
-  return () => []
-}
-
-// Expand recurring events within a month
-function expandEventsForMonth(events: Event[], year: number, month: number): Event[] {
-  const expanded: Event[] = []
-
-  events.forEach((event) => {
-    if (!event.recurring?.isRecurring || !event.recurring.rule) {
-      // Non-recurring: include as-is
-      expanded.push(event)
-      return
-    }
-
-    const rule = event.recurring.rule
-    const parser = parseRecurrenceRule(rule)
-    const dates = parser(year, month)
-
-    if (dates.length === 0) {
-      // If no dates generated (e.g., yearly), we can still show the event on its original date
-      // if it falls within the month.
-      const originalDate = new Date(event.startDateTime)
-      if (originalDate.getMonth() === month && originalDate.getFullYear() === year) {
-        expanded.push(event)
-      }
-      return
-    }
-
-    // For each generated date, create a copy with updated startDateTime
-    dates.forEach((date) => {
-      // Preserve the time from the original event's startDateTime
-      const originalStart = new Date(event.startDateTime)
-      const newStart = new Date(date)
-      newStart.setHours(originalStart.getHours(), originalStart.getMinutes(), 0, 0)
-
-      // Preserve the duration if there is an endDateTime
-      let newEnd = null
-      if (event.endDateTime) {
-        const originalEnd = new Date(event.endDateTime)
-        const duration = originalEnd.getTime() - originalStart.getTime()
-        newEnd = new Date(newStart.getTime() + duration)
-      }
-
-      expanded.push({
-        ...event,
-        startDateTime: newStart.toISOString(),
-        endDateTime: newEnd ? newEnd.toISOString() : undefined,
-        // Keep the same _id but we might want to add a suffix to distinguish occurrences
-        // For now, we keep the same _id; we can add a `occurrence` field if needed.
-      })
-    })
-  })
-
-  return expanded
+// Extract day name from recurring rule
+function extractDayName(rule: string): string | null {
+  const match = rule.toLowerCase().match(/\b(jumapili|jumatatu|jumanne|jumatano|alhamisi|ijumaa|jumamosi)\b/)
+  return match ? match[1] : null
 }
 
 export function CalendarGrid({ events }: CalendarGridProps) {
@@ -144,21 +53,37 @@ export function CalendarGrid({ events }: CalendarGridProps) {
   const currentMonth = currentDate.getMonth()
   const currentYear = currentDate.getFullYear()
 
-  // Expand recurring events for the current month
-  const expandedEvents = useMemo(() => {
-    return expandEventsForMonth(events, currentYear, currentMonth)
-  }, [events, currentYear, currentMonth])
+  // Separate recurring and non‑recurring events
+  const nonRecurringEvents = useMemo(() => {
+    return events.filter(e => !e.recurring?.isRecurring)
+  }, [events])
 
-  // Get days in month
-  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate()
-  const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay()
+  const recurringEvents = useMemo(() => {
+    return events.filter(e => e.recurring?.isRecurring && e.recurring?.rule)
+  }, [events])
+
+  // For the calendar grid, we only show non‑recurring events (or events with a specific date)
+  // But we also want to show recurring events on the grid if they have a specific date? No – we'll show them separately.
+  // However, for consistency, we could optionally show recurring events on their first occurrence? But we'll keep them off the grid.
+  const gridEvents = nonRecurringEvents
+
+  // Expand non‑recurring events for the current month
+  const expandedEvents = useMemo(() => {
+    const expanded: Event[] = []
+    gridEvents.forEach((event) => {
+      const originalDate = new Date(event.startDateTime)
+      if (originalDate.getMonth() === currentMonth && originalDate.getFullYear() === currentYear) {
+        expanded.push(event)
+      }
+    })
+    return expanded
+  }, [gridEvents, currentMonth, currentYear])
 
   // Group expanded events by day
   const eventsByDay = useMemo(() => {
     const grouped: { [key: number]: Event[] } = {}
     expandedEvents.forEach((event) => {
       const date = new Date(event.startDateTime)
-      // Only include if it falls within the current month (should all be, but safe)
       if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
         const day = date.getDate()
         if (!grouped[day]) grouped[day] = []
@@ -167,6 +92,9 @@ export function CalendarGrid({ events }: CalendarGridProps) {
     })
     return grouped
   }, [expandedEvents, currentMonth, currentYear])
+
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate()
+  const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay()
 
   const navigateMonth = (direction: 'prev' | 'next') => {
     const newDate = new Date(currentDate)
@@ -214,9 +142,16 @@ export function CalendarGrid({ events }: CalendarGridProps) {
     return formatTime(event.startDateTime)
   }
 
+  // Helper to get a readable day name in Swahili
+  const getSwahiliDay = (dayNum: number): string => {
+    const days = ['Jumapili', 'Jumatatu', 'Jumanne', 'Jumatano', 'Alhamisi', 'Ijumaa', 'Jumamosi']
+    return days[dayNum] || ''
+  }
+
   return (
-    <>
-      <div className="bg-white rounded-2xl shadow-soft overflow-hidden">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Calendar Grid (2/3 width) */}
+      <div className="lg:col-span-2 bg-white rounded-2xl shadow-soft overflow-hidden">
         {/* Calendar Header Controls */}
         <div className="flex flex-wrap items-center justify-between p-4 border-b border-gray-200">
           <div className="flex items-center gap-3">
@@ -269,7 +204,7 @@ export function CalendarGrid({ events }: CalendarGridProps) {
           </div>
         </div>
 
-        {/* Calendar Grid */}
+        {/* Calendar Grid (Month View) */}
         {view === 'month' && (
           <div className="p-4">
             <div className="grid grid-cols-7 gap-1 mb-2">
@@ -335,12 +270,12 @@ export function CalendarGrid({ events }: CalendarGridProps) {
         {view === 'list' && (
           <div className="p-4">
             {expandedEvents.length === 0 ? (
-              <p className="text-gray-500 text-center py-8">Hakuna matukio kwa mwezi huu.</p>
+              <p className="text-gray-500 text-center py-8">Hakuna matukio ya tarehe maalumu kwa mwezi huu.</p>
             ) : (
               <div className="space-y-4">
                 {expandedEvents.map((event) => (
                   <button
-                    key={`${event._id}-${event.startDateTime}`}
+                    key={event._id}
                     onClick={() => setSelectedEvent(event)}
                     className="block w-full text-left p-4 border rounded-xl hover:shadow-medium transition-shadow"
                   >
@@ -367,11 +302,6 @@ export function CalendarGrid({ events }: CalendarGridProps) {
                           )}
                         </p>
                         {event.location && <p className="text-sm text-gray-400 mt-1">📍 {event.location}</p>}
-                        {event.recurring?.isRecurring && (
-                          <p className="text-xs text-gold-600 font-medium mt-1">
-                            🔄 {event.recurring.rule || 'Linarudia'}
-                          </p>
-                        )}
                       </div>
                       <span className="text-primary-600 text-sm font-medium">Tazama →</span>
                     </div>
@@ -381,6 +311,42 @@ export function CalendarGrid({ events }: CalendarGridProps) {
             )}
           </div>
         )}
+      </div>
+
+      {/* Sidebar: Weekly Recurring Events (1/3 width) */}
+      <div className="lg:col-span-1 space-y-6">
+        <div className="bg-white rounded-2xl shadow-soft p-6">
+          <h3 className="text-lg font-bold text-primary-700 mb-4">Matukio ya Kila Wiki</h3>
+          {recurringEvents.length === 0 ? (
+            <p className="text-gray-500 text-sm">Hakuna matukio ya kila wiki.</p>
+          ) : (
+            <div className="space-y-4">
+              {recurringEvents.map((event) => {
+                const dayName = extractDayName(event.recurring?.rule || '')
+                const time = formatTime(event.startDateTime)
+                const location = event.location || ''
+
+                return (
+                  <div key={event._id} className="border-l-4 border-gold-400 pl-4 py-2">
+                    <h4 className="font-semibold text-primary-700">{event.title}</h4>
+                    {dayName && (
+                      <p className="text-sm text-gray-600">
+                        <span className="font-medium">{dayName}</span> {time}
+                      </p>
+                    )}
+                    {location && <p className="text-sm text-gray-400">📍 {location}</p>}
+                    <button
+                      onClick={() => setSelectedEvent(event)}
+                      className="text-xs text-primary-600 hover:text-primary-800 hover:underline mt-1"
+                    >
+                      Tazama maelezo
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Event Modal */}
@@ -458,6 +424,6 @@ export function CalendarGrid({ events }: CalendarGridProps) {
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 }
