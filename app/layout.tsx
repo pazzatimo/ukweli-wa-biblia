@@ -49,7 +49,7 @@ async function getSiteSettings() {
         { label: 'Makala', url: '/makala' },
         { label: 'Mahubiri', url: '/mahubiri' },
         { label: 'Nyimbo', url: '/nyimbo' },
-        { label: 'Matukio', url: '/matukio' },
+        { label: 'Kalenda', url: '/calendar' },
         { label: 'Media', url: '/media' },
         { label: 'Shuhuda', url: '/shuhuda' },
         { label: 'Kuhusu', url: '/kuhusu' },
