@@ -1,6 +1,5 @@
 import { client } from '@/sanity/lib/sanity.client'
 import { groq } from 'next-sanity'
-import Link from 'next/link'
 import { CalendarGrid } from '@/app/components/CalendarGrid'
 
 const eventsQuery = groq`
@@ -31,7 +30,6 @@ export default async function CalendarPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <section className="bg-primary-700 text-white py-16">
         <div className="container text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Kalenda</h1>
@@ -42,7 +40,6 @@ export default async function CalendarPage() {
         </div>
       </section>
 
-      {/* Calendar Grid */}
       <section className="container py-12">
         <CalendarGrid events={events} />
       </section>
